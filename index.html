@@ -360,7 +360,7 @@
 
   #printArea{display:none;}
   @media print{
-    body > .wrap, body > .toast{ display:none !important; }
+    body > .wrap, body > .toast, #templatePicker, #introModal{ display:none !important; }
     #printArea{
       display:block !important;
       position:absolute;
@@ -380,17 +380,137 @@
     }
     @page{ size:A4 portrait; margin:0; }
   }
+
+  /* --- intro modal --- */
+  .modal-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(12,21,38,.55);
+    z-index:100;
+    align-items:center;justify-content:center;
+    padding:20px;
+  }
+  .modal-box{
+    background:var(--panel);
+    border-radius:16px;
+    padding:28px 26px;
+    max-width:420px;
+    width:100%;
+    box-shadow:0 20px 60px -10px rgba(12,21,38,.35);
+  }
+  .modal-title{
+    font-family:'EB Garamond',serif;
+    font-size:20px;
+    font-weight:600;
+    margin:0 0 14px;
+    color:var(--ink);
+  }
+  .modal-list{
+    margin:0 0 14px;
+    padding-left:20px;
+    font-size:13.5px;
+    color:var(--ink);
+    line-height:1.7;
+  }
+  .modal-note{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    line-height:1.5;
+    margin:0 0 18px;
+  }
+
+  /* --- template picker --- */
+  .screen{
+    min-height:100%;
+    padding:28px 20px 60px;
+  }
+  .tpl-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+    gap:18px;
+  }
+  .tpl-card{
+    background:var(--panel);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    transition:border-color .15s ease, box-shadow .15s ease, transform .1s ease;
+  }
+  .tpl-card:not(.tpl-disabled):hover{
+    border-color:var(--accent);
+    box-shadow:0 8px 24px -8px rgba(47,111,237,.28);
+    transform:translateY(-2px);
+  }
+  .tpl-thumb{
+    width:100%;
+    aspect-ratio:210/297;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    position:relative;
+  }
+  .tpl-thumb .tpl-thumb-title{
+    font-family:'Edwardian Script ITC','Tangerine',cursive;
+    color:#FF0000;
+    font-weight:700;
+    font-size:15px;
+    white-space:nowrap;
+  }
+  .tpl-thumb.tpl-thumb-empty{
+    color:var(--ink-soft);
+    font-size:12px;
+    text-align:center;
+    padding:12px;
+  }
+  .tpl-name{font-weight:700;font-size:14.5px;color:var(--ink);}
+  .tpl-desc{font-size:12.5px;color:var(--ink-soft);line-height:1.5;flex:1;}
+  .tpl-disabled{opacity:.6;}
 </style>
 </head>
 <body>
-<div class="wrap">
+
+<div class="modal-overlay" id="introModal">
+  <div class="modal-box">
+    <h2 class="modal-title">Panduan Ringkas</h2>
+    <ol class="modal-list">
+      <li>Pilih templat sijil yang hendak digunakan.</li>
+      <li>Isi maklumat program: tajuk, tarikh, tempat dan penandatangan.</li>
+      <li>Muat naik senarai Excel atau tambah penerima secara manual.</li>
+      <li>Semak pratonton, kemudian muat turun atau cetak semua sijil sekali gus.</li>
+    </ol>
+    <p class="modal-note">Semua data diproses dalam pelayar anda sahaja dan tidak dimuat naik ke pelayan mana-mana.</p>
+    <button class="primary" id="introOkBtn" style="width:100%;">Faham, Teruskan</button>
+  </div>
+</div>
+
+<div class="screen" id="templatePicker" style="display:none;">
+  <div class="wrap" style="max-width:900px;">
+    <header class="top" style="margin-bottom:20px;">
+      <div>
+        <h1>Pilih Templat Sijil</h1>
+        <p>Pilih reka bentuk sijil yang hendak digunakan untuk kumpulan ini.</p>
+      </div>
+    </header>
+    <div class="tpl-grid" id="tplGrid"></div>
+  </div>
+</div>
+
+<div class="wrap" id="mainApp" style="display:none;">
 
   <header class="top">
     <div>
       <h1>Penjana Sijil</h1>
-      <p>Muat naik senarai Excel atau isi manual, pratonton, lalu muat turun semua sijil sekali gus.</p>
+      <p>Isi maklumat sijil, tambah penerima, dan jana sijil secara pukal.</p>
     </div>
     <div class="steps">
+      <button class="tiny ghost" id="backToTemplates" style="margin-right:4px;">🔄 Tukar Templat</button>
       <span class="step-pill"><b>1</b> Tetapan sijil</span>
       <span class="step-pill"><b>2</b> Data penerima</span>
       <span class="step-pill"><b>3</b> Pratonton &amp; jana</span>
@@ -400,7 +520,7 @@
   <!-- STEP 1: FIXED FIELDS -->
   <section class="card">
     <h2><span class="num">1</span> Tetapan sijil (tetap untuk semua penerima)</h2>
-    <p class="hint">Maklumat ini sama untuk setiap sijil dalam kumpulan ini — cuma nama &amp; jawatan penerima yang berbeza-beza.</p>
+    <p class="hint">Maklumat berikut adalah tetap bagi setiap sijil dalam kumpulan ini. Hanya nama dan jawatan penerima yang berbeza.</p>
 
     <div class="grid2" style="margin-bottom:14px;">
       <label class="field">
@@ -449,7 +569,7 @@
   <!-- STEP 2: RECIPIENTS -->
   <section class="card">
     <h2><span class="num">2</span> Data penerima</h2>
-    <p class="hint">Muat naik fail Excel (.xlsx/.xls) untuk import pukal, atau tambah baris secara manual. Boleh import dari beberapa fail / bahagian jadual berlainan — semua akan ditambah ke senarai yang sama di bawah.</p>
+    <p class="hint">Muat naik fail Excel untuk import pukal, atau tambah penerima secara manual. Import boleh dilakukan berkali-kali; setiap import akan ditambah ke senarai yang sama.</p>
 
     <div id="dropzone" class="dropzone">
       <strong>Klik untuk pilih fail Excel</strong> atau seret &amp; lepaskan di sini
@@ -457,7 +577,7 @@
     </div>
 
     <div id="importWizard" style="display:none;margin-top:18px;">
-      <p class="hint" style="margin-bottom:8px;"><strong>Langkah A:</strong> klik baris yang menjadi <strong>tajuk lajur</strong> (header) dalam pratonton di bawah.</p>
+      <p class="hint" style="margin-bottom:8px;"><strong>Langkah A:</strong> Klik baris yang menjadi tajuk lajur (header).</p>
       <div class="scrollx" style="max-height:230px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;">
         <table class="datatbl" id="rawPreviewTbl"><tbody></tbody></table>
       </div>
@@ -477,7 +597,7 @@
         </label>
       </div>
 
-      <p class="hint" style="margin:14px 0 8px;"><strong>Langkah B:</strong> tanda baris yang mahu diimport.</p>
+      <p class="hint" style="margin:14px 0 8px;"><strong>Langkah B:</strong> Tandakan baris yang hendak diimport.</p>
       <div class="toolbar">
         <button class="tiny ghost" id="selAllRows">Pilih semua</button>
         <button class="tiny ghost" id="selNoneRows">Nyahpilih semua</button>
@@ -520,7 +640,7 @@
   <!-- STEP 3: PREVIEW + GENERATE -->
   <section class="card">
     <h2><span class="num">3</span> Pratonton &amp; jana sijil</h2>
-    <p class="hint">Pratonton menggunakan penerima yang dipilih dari senarai. Apabila sedia, muat turun semua sijil bagi setiap penerima yang <strong>ditanda</strong> di jadual atas.</p>
+    <p class="hint">Pratonton memaparkan penerima yang dipilih. Muat turun atau cetak akan menggunakan semua penerima yang <strong>ditanda</strong> di jadual atas.</p>
 
     <div class="preview-shell">
       <div class="preview-controls">
@@ -541,7 +661,7 @@
         </div>
 
         <div style="border-top:1px solid var(--line);margin-top:8px;padding-top:14px;">
-          <p class="hint" style="margin:0 0 10px;"><strong>Cetak terus (macam mail merge Word)</strong></p>
+          <p class="hint" style="margin:0 0 10px;"><strong>Cetak terus</strong></p>
           <button class="subtle" id="printAll" style="width:100%;margin-bottom:8px;">🖨️ Cetak Semua Penerima</button>
           <button class="subtle" id="printChecked" style="width:100%;margin-bottom:8px;">🖨️ Cetak Yang Ditanda Sahaja</button>
           <button class="ghost" id="printOne" style="width:100%;">🖨️ Cetak Sijil Ini Sahaja</button>
@@ -590,7 +710,7 @@
   </section>
 
   <footer class="note">
-    Semua pemprosesan berlaku terus dalam pelayar anda — fail Excel dan data penerima tidak dimuat naik ke mana-mana pelayan.
+    Semua pemprosesan berlaku terus dalam pelayar anda. Fail Excel dan data penerima tidak dimuat naik ke pelayan.
   </footer>
 </div>
 
@@ -1171,6 +1291,69 @@
     doPrint([r]);
   });
 
+  // ---------- template picker ----------
+  var TEMPLATES = [
+    {
+      id: 'ppd-kluang-jpcase',
+      name: 'Klasik Merah — PPD Kluang',
+      desc: 'Templat rasmi berdasarkan format J-PCASE, Pejabat Pendidikan Daerah Kluang.',
+      available: true
+    }
+  ];
+
+  function renderTemplatePicker(){
+    var grid = document.getElementById('tplGrid');
+    grid.innerHTML = '';
+    TEMPLATES.forEach(function(t){
+      var card = document.createElement('div');
+      card.className = 'tpl-card';
+      card.innerHTML =
+        '<div class="tpl-thumb"><div class="tpl-thumb-title">Sijil Penghargaan</div></div>' +
+        '<div class="tpl-name">' + t.name + '</div>' +
+        '<div class="tpl-desc">' + t.desc + '</div>' +
+        '<button class="primary" style="width:100%;">Guna Templat Ini</button>';
+      card.querySelector('button').addEventListener('click', function(){
+        selectTemplate(t.id);
+      });
+      grid.appendChild(card);
+    });
+
+    var moreCard = document.createElement('div');
+    moreCard.className = 'tpl-card tpl-disabled';
+    moreCard.innerHTML =
+      '<div class="tpl-thumb tpl-thumb-empty">Templat tambahan akan disediakan mengikut keperluan</div>' +
+      '<div class="tpl-name">Templat Lain</div>' +
+      '<div class="tpl-desc">Hantar fail templat Word untuk ditambah ke sistem ini.</div>';
+    grid.appendChild(moreCard);
+  }
+
+  function showTemplatePicker(){
+    document.getElementById('mainApp').style.display = 'none';
+    document.getElementById('templatePicker').style.display = 'block';
+  }
+
+  function selectTemplate(id){
+    document.getElementById('templatePicker').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    setTimeout(rescaleStage, 30);
+  }
+
+  document.getElementById('backToTemplates').addEventListener('click', showTemplatePicker);
+
+  // ---------- first-use notice ----------
+  function hasSeenIntro(){
+    try{ return localStorage.getItem('sijilgen_intro_seen') === '1'; }catch(e){ return true; }
+  }
+  function markIntroSeen(){
+    try{ localStorage.setItem('sijilgen_intro_seen', '1'); }catch(e){}
+  }
+
+  document.getElementById('introOkBtn').addEventListener('click', function(){
+    markIntroSeen();
+    document.getElementById('introModal').style.display = 'none';
+    showTemplatePicker();
+  });
+
   // ---------- init ----------
   function init(){
     recipients.push({ id: uid++, nama: 'Noor Syamsila binti Yahya', jawatan: 'Jurulatih Utama', checked: true });
@@ -1178,6 +1361,13 @@
     rebuildPreviewPicker();
     rescaleStage();
     refreshLivePreview();
+    renderTemplatePicker();
+
+    if(!hasSeenIntro()){
+      document.getElementById('introModal').style.display = 'flex';
+    } else {
+      showTemplatePicker();
+    }
   }
   window.addEventListener('load', function(){
     setTimeout(rescaleStage, 50);
