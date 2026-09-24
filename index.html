@@ -482,7 +482,7 @@
     <ol class="modal-list">
       <li>Pilih template sijil yang hendak digunakan.</li>
       <li>Isi maklumat program: tajuk, tarikh, tempat dan penandatangan.</li>
-      <li>Muat naik senarai Excel atau tambah penerima secara manual.</li>
+      <li>Muat naik senarai Excel (hanya lajur <strong>NAMA</strong> & <strong>JAWATAN</strong>) atau tambah penerima secara manual.</li>
       <li>Semak pratonton, kemudian muat turun atau cetak semua sijil sekali gus.</li>
     </ol>
     <p class="modal-note">Semua data diproses dalam pelayar anda sahaja dan tidak dimuat naik ke pelayan mana-mana.</p>
@@ -569,7 +569,36 @@
   <!-- STEP 2: RECIPIENTS -->
   <section class="card">
     <h2><span class="num">2</span> Data penerima</h2>
-    <p class="hint">Muat naik fail Excel , atau tambah penerima secara manual. Import boleh dilakukan berkali-kali; setiap import akan ditambah ke senarai yang sama.</p>
+    <p class="hint">Muat naik fail Excel, atau tambah penerima secara manual. Import boleh dilakukan berkali-kali; setiap import akan ditambah ke senarai yang sama.</p>
+
+    <!-- EXCEL FORMAT REMINDER -->
+    <div style="background:var(--accent-soft); border:1px solid var(--accent); border-radius:10px; padding:16px; margin-bottom:18px; font-size:13.5px; color:var(--ink);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:18px;">⚠️</span>
+        <strong style="font-size:14px;color:var(--accent);">Penting: Format Fail Excel</strong>
+      </div>
+      <p style="margin:0 0 12px; color:var(--ink-soft); line-height:1.5;">
+        Sila pastikan fail Excel anda <strong>hanya mengandungi 2 lajur</strong> seperti format di bawah. Elakkan data tambahan (seperti No. KP, Sekolah, dll.) untuk mengelakkan kekeliruan semasa pemetaan lajur (mapping).
+      </p>
+      <div style="background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px; font-family:monospace; font-size:13px; color:var(--ink);">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; font-weight:700; border-bottom:1.5px solid var(--line); padding-bottom:8px; margin-bottom:8px; color:var(--accent);">
+          <div>NAMA</div>
+          <div>JAWATAN</div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div>NOOR SYAMSILA BINTI YAHYA</div>
+          <div>JURULATIH UTAMA</div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:6px;">
+          <div>AHMAD BIN ALI</div>
+          <div>FASILITATOR</div>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:6px;">
+          <div>SITI BINTI ABU</div>
+          <div>PESERTA</div>
+        </div>
+      </div>
+    </div>
 
     <div id="dropzone" class="dropzone">
       <strong>Klik untuk pilih fail Excel</strong> atau seret &amp; lepaskan di sini
@@ -767,7 +796,6 @@
 
   function fillCert(container, recipient){
     var ff = fixedFields();
-    container.querySelector('.line-i span, #c_org') ; // noop safety
     var q = function(sel){ return container.querySelector(sel); };
     q('#c_org') && (q('#c_org').textContent = ff.org);
     var nameEl = q('#c_name'); if(nameEl) nameEl.textContent = (recipient ? recipient.nama : "") || "—";
