@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Penjana Sijil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=EB+Garamond:wght@400;700&family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  :root{
+    --ink:#152238;
+    --ink-soft:#5c6b84;
+    --paper:#f2f6fc;
+    --panel:#ffffff;
+    --line:#dce6f4;
+    --accent:#2f6fed;
+    --accent-hover:#2559c7;
+    --accent-soft:#e8f1fe;
+    --gold:#2f6fed;
+    --ok:#1f9d67;
+    --radius:14px;
+    box-sizing:border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e6edf9; --ink-soft:#a9b8d1; --paper:#0c1526; --panel:#131e35;
+      --line:#233152; --accent:#5b93ff; --accent-hover:#7aa6ff; --accent-soft:#1c2c4d; --gold:#5b93ff;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e6edf9; --ink-soft:#a9b8d1; --paper:#0c1526; --panel:#131e35;
+    --line:#233152; --accent:#5b93ff; --accent-hover:#7aa6ff; --accent-soft:#1c2c4d; --gold:#5b93ff;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:28px 20px 80px;
+  }
+  header.top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+  }
+  header.top h1{
+    font-family:'EB Garamond',serif;
+    font-weight:600;
+    font-size:28px;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  header.top p{
+    margin:4px 0 0;
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+  .steps{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .step-pill{
+    font-size:12.5px;
+    padding:6px 12px;
+    border-radius:999px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+  }
+  .step-pill b{color:var(--accent);}
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:24px 26px;
+    margin-bottom:22px;
+    box-shadow:0 1px 2px rgba(21,34,56,.04), 0 8px 24px -12px rgba(47,111,237,.10);
+  }
+  .card h2{
+    font-family:'EB Garamond',serif;
+    font-size:18px;
+    font-weight:600;
+    margin:0 0 4px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .card h2 .num{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:24px;height:24px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#fff;
+    font-size:12px;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+  }
+  .card .hint{
+    color:var(--ink-soft);
+    font-size:13.5px;
+    margin:0 0 16px;
+    line-height:1.5;
+  }
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  @media (max-width:720px){ .grid2,.grid3{grid-template-columns:1fr;} }
+
+  label.field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--ink-soft);}
+  label.field span.lbl{font-weight:600;color:var(--ink);}
+  input[type=text], input[type=number], select, textarea{
+    font-family:inherit;
+    font-size:14px;
+    padding:10px 12px;
+    border-radius:9px;
+    border:1.5px solid var(--line);
+    background:var(--paper);
+    color:var(--ink);
+    width:100%;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  textarea{resize:vertical;min-height:44px;line-height:1.4;}
+  input:hover, select:hover, textarea:hover{ border-color:#b7cdf0; }
+  input:focus,select:focus,textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  button:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:1px;
+  }
+
+  button{
+    font-family:inherit;
+    cursor:pointer;
+    border:none;
+    border-radius:9px;
+    font-size:13.5px;
+    font-weight:600;
+    padding:10px 16px;
+    transition:transform .08s ease, opacity .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  button:active{transform:scale(0.97);}
+  button.primary{background:var(--accent);color:#fff;box-shadow:0 4px 14px -4px rgba(47,111,237,.55);}
+  button.primary:hover{background:var(--accent-hover);}
+  button.primary:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;}
+  button.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent-soft);}
+  button.ghost:hover{background:var(--accent-soft);}
+  button.subtle{background:var(--accent-soft);color:var(--accent);}
+  button.subtle:hover{background:#d6e6fd;}
+  button.tiny{padding:5px 10px;font-size:12px;border-radius:7px;}
+  button.icon-del{background:transparent;color:#c0394a;padding:5px 8px;}
+  button.icon-del:hover{background:#fbe6e9;}
+
+  .dropzone{
+    border:1.5px dashed var(--line);
+    border-radius:12px;
+    padding:22px;
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:13.5px;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .dropzone:hover, .dropzone.drag{border-color:var(--accent); background:var(--accent-soft);}
+  .dropzone strong{color:var(--ink);}
+  input[type=file]{display:none;}
+
+  table.datatbl{width:100%;border-collapse:collapse;font-size:13px;}
+  table.datatbl th, table.datatbl td{
+    padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;
+  }
+  table.datatbl th{color:var(--ink-soft);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
+  table.datatbl tbody tr:hover{background:var(--accent-soft);}
+  .scrollx{overflow-x:auto;scroll-padding-top:env(safe-area-inset-top, 0px);}
+  .rowchosen{background:var(--accent);color:#fff !important;}
+
+  .mapping-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px;}
+
+  .recip-table td input, .recip-table td select{padding:6px 8px;font-size:13px;}
+  .recip-table td.chk{width:34px;text-align:center;}
+  .recip-table td.actions{width:40px;text-align:center;}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+  .count-badge{font-size:12.5px;color:var(--ink-soft);margin-left:auto;}
+
+  /* --- certificate --- */
+  .preview-shell{
+    display:flex;
+    gap:22px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
+  .preview-controls{flex:1 1 260px;min-width:240px;display:flex;flex-direction:column;gap:12px;}
+  .preview-stage{
+    flex:2 1 420px;
+    display:flex;
+    justify-content:center;
+  }
+  .stage-frame{
+    width:100%;
+    max-width:460px;
+    aspect-ratio:210/297;
+    position:relative;
+    overflow:hidden;
+    border-radius:6px;
+    box-shadow:0 10px 34px rgba(0,0,0,.18);
+  }
+  .cert-scale-wrap{
+    position:absolute;top:0;left:0;
+    width:794px;height:1123px;
+    transform-origin:top left;
+  }
+  .cert{
+    width:794px;height:1123px;
+    background:#ffffff;
+    color:#000000;
+    position:relative;
+    padding:96px 96px 56px;
+    font-family:'Libre Franklin',sans-serif;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+  }
+  .cert .spacer-55{
+    font-size:55pt;
+    line-height:1.15;
+  }
+  .cert .spacer-38{
+    font-size:38pt;
+    line-height:1.15;
+  }
+  .cert .title{
+    font-family:'Edwardian Script ITC','Tangerine',cursive;
+    font-weight:700;
+    font-size:72pt;
+    color:#FF0000;
+    margin:0 0 10px;
+    line-height:1;
+    white-space:nowrap;
+  }
+  .cert .line-cal{
+    font-family:'Calibri','Carlito','Libre Franklin',sans-serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:14pt;
+    color:#000000;
+    line-height:1.5;
+  }
+  .cert .line-an{
+    font-family:'Arial Narrow','Libre Franklin',sans-serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:14pt;
+    color:#000000;
+    line-height:1.5;
+  }
+  .cert .name{
+    font-family:'Libre Franklin',sans-serif;
+    font-weight:700;
+    font-size:18pt;
+    text-transform:uppercase;
+    margin:14px 0 14px;
+    word-break:break-word;
+  }
+  .cert .role{
+    font-family:'Libre Franklin',sans-serif;
+    font-weight:800;
+    font-size:18pt;
+    text-transform:uppercase;
+    margin-top:2px;
+  }
+  .cert .program{
+    font-family:'Libre Franklin',sans-serif;
+    font-weight:700;
+    font-size:14pt;
+    text-transform:uppercase;
+    line-height:1.4;
+    margin-top:2px;
+    padding:0 6px;
+  }
+  .cert .datevenue{margin-top:22px;}
+  .cert .datevenue .val{
+    font-family:'Libre Franklin',sans-serif;
+    font-weight:700;
+    font-size:14pt;
+    text-transform:uppercase;
+    margin-top:2px;
+  }
+  .cert .spacer{flex:1;}
+  .cert .sign{
+    text-align:right;
+    padding-right:14px;
+    font-family:'Libre Franklin',sans-serif;
+    font-size:12pt;
+    line-height:1.5;
+  }
+  .cert .sign .sig-name{font-weight:700;}
+  .cert .blank-16{
+    font-family:'Libre Franklin',sans-serif;
+    font-size:16pt;
+    line-height:1.15;
+  }
+  .cert .blank-cal14{
+    font-family:'Calibri','Carlito','Libre Franklin',sans-serif;
+    font-size:14pt;
+    line-height:1.15;
+  }
+
+  .field-narrow{max-width:120px;}
+
+  footer.note{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:12.5px;
+    margin-top:30px;
+    line-height:1.6;
+  }
+
+  .progress-bar{
+    height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:6px;
+  }
+  .progress-bar > div{height:100%;background:var(--accent);width:0%;transition:width .2s ease;}
+  .progress-label{font-size:12.5px;color:var(--ink-soft);margin-top:6px;}
+
+  .empty-note{
+    font-size:13px;color:var(--ink-soft);padding:14px 0;text-align:center;
+  }
+  .toast{
+    position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+    background:var(--ink);color:var(--paper);
+    padding:10px 18px;border-radius:10px;font-size:13.5px;
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
+    opacity:0;pointer-events:none;transition:opacity .2s ease, bottom .2s ease;
+    z-index:50;
+  }
+  .toast.show{opacity:1;bottom:32px;}
+
+  #printArea{display:none;}
+  @media print{
+    body > .wrap, body > .toast{ display:none !important; }
+    #printArea{
+      display:block !important;
+      position:absolute;
+      top:0; left:0;
+    }
+    #printArea .print-page{
+      width:210mm;
+      height:297mm;
+      page-break-after:always;
+      overflow:hidden;
+    }
+    #printArea .print-page:last-child{page-break-after:auto;}
+    #printArea .cert{
+      width:210mm !important;
+      height:297mm !important;
+      transform:none !important;
+    }
+    @page{ size:A4 portrait; margin:0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Penjana Sijil</h1>
+      <p>Muat naik senarai Excel atau isi manual, pratonton, lalu muat turun semua sijil sekali gus.</p>
+    </div>
+    <div class="steps">
+      <span class="step-pill"><b>1</b> Tetapan sijil</span>
+      <span class="step-pill"><b>2</b> Data penerima</span>
+      <span class="step-pill"><b>3</b> Pratonton &amp; jana</span>
+    </div>
+  </header>
+
+  <!-- STEP 1: FIXED FIELDS -->
+  <section class="card">
+    <h2><span class="num">1</span> Tetapan sijil (tetap untuk semua penerima)</h2>
+    <p class="hint">Maklumat ini sama untuk setiap sijil dalam kumpulan ini — cuma nama &amp; jawatan penerima yang berbeza-beza.</p>
+
+    <div class="grid2" style="margin-bottom:14px;">
+      <label class="field">
+        <span class="lbl">Nama organisasi penganjur</span>
+        <input type="text" id="f_org" value="Pejabat Pendidikan Daerah Kluang">
+      </label>
+      <label class="field">
+        <span class="lbl">Tempat</span>
+        <input type="text" id="f_tempat" value="Dewan SK Seri Intan, Kluang">
+      </label>
+    </div>
+
+    <label class="field" style="margin-bottom:14px;">
+      <span class="lbl">Tajuk / nama program</span>
+      <textarea id="f_program">Aktiviti Pelan Pembangunan Kompetensi Tahun 2026 : Bengkel Kerja J-PCASE Merungkai dan Merangkai Kurikulum Prasekolah 2026 kepada Guru Prasekolah Daerah Kluang</textarea>
+    </label>
+
+    <div class="grid2" style="margin-bottom:14px;">
+      <label class="field">
+        <span class="lbl">Tarikh</span>
+        <input type="text" id="f_tarikh" value="23 – 24 September 2026">
+      </label>
+      <label class="field">
+        <span class="lbl">&nbsp;</span>
+        <span style="font-size:12.5px;color:var(--ink-soft);padding-top:8px;">Boleh taip julat tarikh terus, cth: "12 – 13 Oktober 2026"</span>
+      </label>
+    </div>
+
+    <p class="hint" style="margin-top:18px;margin-bottom:10px;"><strong>Penandatangan</strong></p>
+    <div class="grid3">
+      <label class="field">
+        <span class="lbl">Nama penandatangan</span>
+        <input type="text" id="f_signName" value="Haji Ayub bin Ibrahim">
+      </label>
+      <label class="field">
+        <span class="lbl">Jawatan</span>
+        <input type="text" id="f_signRole" value="Pegawai Pendidikan Daerah">
+      </label>
+      <label class="field">
+        <span class="lbl">Organisasi penandatangan</span>
+        <input type="text" id="f_signOrg" value="Pejabat Pendidikan Daerah Kluang">
+      </label>
+    </div>
+  </section>
+
+  <!-- STEP 2: RECIPIENTS -->
+  <section class="card">
+    <h2><span class="num">2</span> Data penerima</h2>
+    <p class="hint">Muat naik fail Excel (.xlsx/.xls) untuk import pukal, atau tambah baris secara manual. Boleh import dari beberapa fail / bahagian jadual berlainan — semua akan ditambah ke senarai yang sama di bawah.</p>
+
+    <div id="dropzone" class="dropzone">
+      <strong>Klik untuk pilih fail Excel</strong> atau seret &amp; lepaskan di sini
+      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv">
+    </div>
+
+    <div id="importWizard" style="display:none;margin-top:18px;">
+      <p class="hint" style="margin-bottom:8px;"><strong>Langkah A:</strong> klik baris yang menjadi <strong>tajuk lajur</strong> (header) dalam pratonton di bawah.</p>
+      <div class="scrollx" style="max-height:230px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;">
+        <table class="datatbl" id="rawPreviewTbl"><tbody></tbody></table>
+      </div>
+
+      <div class="mapping-row" style="margin-top:16px;">
+        <label class="field field-narrow" style="min-width:180px;">
+          <span class="lbl">Lajur untuk Nama</span>
+          <select id="mapNama"></select>
+        </label>
+        <label class="field field-narrow" style="min-width:200px;">
+          <span class="lbl">Lajur untuk Jawatan (pilihan)</span>
+          <select id="mapJawatan"><option value="__none__">— Tiada, guna nilai tetap —</option></select>
+        </label>
+        <label class="field field-narrow" style="min-width:180px;" id="defaultJawatanWrap">
+          <span class="lbl">Jawatan lalai</span>
+          <input type="text" id="defaultJawatan" placeholder="cth: FASILITATOR">
+        </label>
+      </div>
+
+      <p class="hint" style="margin:14px 0 8px;"><strong>Langkah B:</strong> tanda baris yang mahu diimport.</p>
+      <div class="toolbar">
+        <button class="tiny ghost" id="selAllRows">Pilih semua</button>
+        <button class="tiny ghost" id="selNoneRows">Nyahpilih semua</button>
+        <span class="count-badge" id="rawRowCount"></span>
+      </div>
+      <div class="scrollx" style="max-height:260px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;">
+        <table class="datatbl" id="importDataTbl"><thead></thead><tbody></tbody></table>
+      </div>
+
+      <div style="margin-top:14px;display:flex;gap:10px;">
+        <button class="primary" id="doImport">Import baris dipilih ke senarai penerima</button>
+        <button class="ghost" id="cancelImport">Batal</button>
+      </div>
+    </div>
+
+    <div style="margin-top:22px;">
+      <div class="toolbar">
+        <strong style="font-size:14px;">Senarai penerima</strong>
+        <button class="tiny subtle" id="addManualRow">+ Tambah baris manual</button>
+        <span class="count-badge" id="recipCount">0 penerima · 0 dipilih</span>
+      </div>
+      <div class="scrollx" style="border:1px solid var(--line);border-radius:10px;">
+        <table class="datatbl recip-table" id="recipTbl">
+          <thead>
+            <tr>
+              <th class="chk"><input type="checkbox" id="chkAll"></th>
+              <th style="width:34px;">#</th>
+              <th>Nama</th>
+              <th>Jawatan</th>
+              <th class="actions"></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="empty-note" id="recipEmptyNote">Belum ada penerima lagi — import Excel atau tambah baris manual di atas.</div>
+    </div>
+  </section>
+
+  <!-- STEP 3: PREVIEW + GENERATE -->
+  <section class="card">
+    <h2><span class="num">3</span> Pratonton &amp; jana sijil</h2>
+    <p class="hint">Pratonton menggunakan penerima yang dipilih dari senarai. Apabila sedia, muat turun semua sijil bagi setiap penerima yang <strong>ditanda</strong> di jadual atas.</p>
+
+    <div class="preview-shell">
+      <div class="preview-controls">
+        <label class="field">
+          <span class="lbl">Pratonton untuk</span>
+          <select id="previewPicker"></select>
+        </label>
+        <div style="display:flex;gap:8px;">
+          <button class="ghost" id="prevRecip" style="flex:1;">◀ Sebelum</button>
+          <button class="ghost" id="nextRecip" style="flex:1;">Seterus ▶</button>
+        </div>
+
+        <div style="margin-top:6px;">
+          <button class="primary" id="genZip" style="width:100%;">Jana &amp; Muat Turun Semua (ZIP, PDF berasingan)</button>
+        </div>
+        <div>
+          <button class="ghost" id="genOnePdf" style="width:100%;">Muat Turun 1 PDF (semua muka surat)</button>
+        </div>
+
+        <div style="border-top:1px solid var(--line);margin-top:8px;padding-top:14px;">
+          <p class="hint" style="margin:0 0 10px;"><strong>Cetak terus (macam mail merge Word)</strong></p>
+          <button class="subtle" id="printAll" style="width:100%;margin-bottom:8px;">🖨️ Cetak Semua Penerima</button>
+          <button class="subtle" id="printChecked" style="width:100%;margin-bottom:8px;">🖨️ Cetak Yang Ditanda Sahaja</button>
+          <button class="ghost" id="printOne" style="width:100%;">🖨️ Cetak Sijil Ini Sahaja</button>
+        </div>
+
+        <div id="progressWrap" style="display:none;">
+          <div class="progress-bar"><div id="progressFill"></div></div>
+          <div class="progress-label" id="progressLabel"></div>
+        </div>
+      </div>
+
+      <div class="preview-stage">
+        <div class="stage-frame" id="stageFrame">
+          <div class="cert-scale-wrap" id="certScaleWrap">
+            <div class="cert" id="certLive">
+              <div class="spacer-55">&nbsp;</div>
+              <div class="spacer-38">&nbsp;</div>
+              <div class="title">Sijil Penghargaan</div>
+              <div class="line-cal">Dengan sukacitanya <span id="c_org">Pejabat Pendidikan Daerah Kluang</span></div>
+              <div class="line-cal">merakamkan setinggi-tinggi penghargaan dan terima kasih kepada</div>
+              <div class="name" id="c_name">NOOR SYAMSILA BINTI YAHYA</div>
+              <div class="line-cal">atas sumbangan khidmat bakti yang cemerlang sebagai</div>
+              <div class="role" id="c_role">JURULATIH UTAMA</div>
+              <div class="program" id="c_program">AKTIVITI PELAN PEMBANGUNAN KOMPETENSI TAHUN 2026</div>
+              <div class="datevenue">
+                <div class="line-an">pada</div>
+                <div class="val val-tarikh" id="c_tarikh">23 – 24 SEPTEMBER 2026</div>
+                <div class="line-an" style="margin-top:14px;">bertempat di</div>
+                <div class="val val-tempat" id="c_tempat">DEWAN SK SERI INTAN, KLUANG</div>
+              </div>
+              <div class="sign">
+                <div class="blank-16">&nbsp;</div>
+                <div class="blank-cal14">&nbsp;</div>
+                <div class="blank-cal14">&nbsp;</div>
+                <div class="blank-cal14">&nbsp;</div>
+                <div class="blank-cal14">&nbsp;</div>
+                <div class="sig-name" id="c_signName">(HAJI AYUB BIN IBRAHIM)</div>
+                <div id="c_signRole">Pegawai Pendidikan Daerah</div>
+                <div id="c_signOrg">Pejabat Pendidikan Daerah Kluang</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="note">
+    Semua pemprosesan berlaku terus dalam pelayar anda — fail Excel dan data penerima tidak dimuat naik ke mana-mana pelayan.
+  </footer>
+</div>
+
+<div id="printArea"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- state ----------
+  var recipients = []; // {id, nama, jawatan, checked}
+  var uid = 1;
+  var rawRows = [];          // full AOA from uploaded sheet
+  var headerRowIdx = null;   // index into rawRows chosen as header
+
+  var els = {};
+  ["f_org","f_tempat","f_program","f_tarikh","f_signName","f_signRole","f_signOrg"].forEach(function(id){
+    els[id] = document.getElementById(id);
+  });
+
+  function toast(msg){
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._h);
+    toast._h = setTimeout(function(){ t.classList.remove('show'); }, 2400);
+  }
+
+  function esc(s){
+    return String(s == null ? "" : s);
+  }
+
+  // ---------- fixed-field live sync ----------
+  function fixedFields(){
+    return {
+      org: els.f_org.value.trim() || "—",
+      tempat: els.f_tempat.value.trim() || "—",
+      program: els.f_program.value.trim() || "—",
+      tarikh: els.f_tarikh.value.trim() || "—",
+      signName: els.f_signName.value.trim() || "—",
+      signRole: els.f_signRole.value.trim() || "—",
+      signOrg: els.f_signOrg.value.trim() || "—"
+    };
+  }
+
+  function formatSignName(n){
+    n = n.trim();
+    if(!n) return "—";
+    if(n[0] === "(") return n;
+    return "(" + n + ")";
+  }
+
+  function fillCert(container, recipient){
+    var ff = fixedFields();
+    container.querySelector('.line-i span, #c_org') ; // noop safety
+    var q = function(sel){ return container.querySelector(sel); };
+    q('#c_org') && (q('#c_org').textContent = ff.org);
+    var nameEl = q('#c_name'); if(nameEl) nameEl.textContent = (recipient ? recipient.nama : "") || "—";
+    var roleEl = q('#c_role'); if(roleEl) roleEl.textContent = (recipient ? recipient.jawatan : "") || "—";
+    var progEl = q('#c_program'); if(progEl) progEl.textContent = ff.program;
+    var tarikhEl = q('#c_tarikh'); if(tarikhEl) tarikhEl.textContent = ff.tarikh;
+    var tempatEl = q('#c_tempat'); if(tempatEl) tempatEl.textContent = ff.tempat;
+    var signNameEl = q('#c_signName'); if(signNameEl) signNameEl.textContent = formatSignName(ff.signName);
+    var signRoleEl = q('#c_signRole'); if(signRoleEl) signRoleEl.textContent = ff.signRole;
+    var signOrgEl = q('#c_signOrg'); if(signOrgEl) signOrgEl.textContent = ff.signOrg;
+  }
+
+  function currentPreviewRecipient(){
+    var picker = document.getElementById('previewPicker');
+    var id = picker.value;
+    if(!id) return null;
+    for(var i=0;i<recipients.length;i++){ if(String(recipients[i].id) === id) return recipients[i]; }
+    return null;
+  }
+
+  function refreshLivePreview(){
+    var r = currentPreviewRecipient();
+    fillCert(document.getElementById('certLive'), r);
+  }
+
+  [els.f_org, els.f_tempat, els.f_program, els.f_tarikh, els.f_signName, els.f_signRole, els.f_signOrg]
+    .forEach(function(el){ el.addEventListener('input', refreshLivePreview); });
+
+  // ---------- scale certificate to fit stage ----------
+  function rescaleStage(){
+    var frame = document.getElementById('stageFrame');
+    var wrap = document.getElementById('certScaleWrap');
+    var w = frame.clientWidth;
+    var scale = w / 794;
+    wrap.style.transform = 'scale(' + scale + ')';
+  }
+  window.addEventListener('resize', rescaleStage);
+
+  // ---------- recipients table ----------
+  function updateRecipCount(){
+    var checked = recipients.filter(function(r){ return r.checked; }).length;
+    document.getElementById('recipCount').textContent = recipients.length + ' penerima · ' + checked + ' dipilih';
+    document.getElementById('recipEmptyNote').style.display = recipients.length ? 'none' : 'block';
+    document.getElementById('chkAll').checked = recipients.length > 0 && checked === recipients.length;
+  }
+
+  function rebuildPreviewPicker(){
+    var picker = document.getElementById('previewPicker');
+    var prevVal = picker.value;
+    picker.innerHTML = '';
+    recipients.forEach(function(r){
+      var o = document.createElement('option');
+      o.value = r.id;
+      o.textContent = (r.nama || '(tiada nama)') + (r.jawatan ? ' — ' + r.jawatan : '');
+      picker.appendChild(o);
+    });
+    if(recipients.length){
+      var stillThere = recipients.some(function(r){ return String(r.id) === prevVal; });
+      picker.value = stillThere ? prevVal : recipients[0].id;
+    }
+    refreshLivePreview();
+  }
+
+  function renderRecipTable(){
+    var tbody = document.querySelector('#recipTbl tbody');
+    tbody.innerHTML = '';
+    recipients.forEach(function(r, idx){
+      var tr = document.createElement('tr');
+
+      var tdChk = document.createElement('td');
+      tdChk.className = 'chk';
+      var cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = !!r.checked;
+      cb.addEventListener('change', function(){ r.checked = cb.checked; updateRecipCount(); });
+      tdChk.appendChild(cb);
+
+      var tdNum = document.createElement('td');
+      tdNum.textContent = idx + 1;
+
+      var tdNama = document.createElement('td');
+      var inpNama = document.createElement('input');
+      inpNama.type = 'text';
+      inpNama.value = r.nama;
+      inpNama.placeholder = 'Nama penuh';
+      inpNama.addEventListener('input', function(){ r.nama = inpNama.value; rebuildPreviewPicker(); });
+      tdNama.appendChild(inpNama);
+
+      var tdJawatan = document.createElement('td');
+      var inpJawatan = document.createElement('input');
+      inpJawatan.type = 'text';
+      inpJawatan.value = r.jawatan;
+      inpJawatan.placeholder = 'cth: FASILITATOR';
+      inpJawatan.addEventListener('input', function(){ r.jawatan = inpJawatan.value; rebuildPreviewPicker(); });
+      tdJawatan.appendChild(inpJawatan);
+
+      var tdAct = document.createElement('td');
+      tdAct.className = 'actions';
+      var delBtn = document.createElement('button');
+      delBtn.className = 'icon-del';
+      delBtn.title = 'Buang baris';
+      delBtn.textContent = '✕';
+      delBtn.addEventListener('click', function(){
+        recipients = recipients.filter(function(x){ return x.id !== r.id; });
+        renderRecipTable(); rebuildPreviewPicker(); updateRecipCount();
+      });
+      tdAct.appendChild(delBtn);
+
+      tr.appendChild(tdChk); tr.appendChild(tdNum); tr.appendChild(tdNama); tr.appendChild(tdJawatan); tr.appendChild(tdAct);
+      tbody.appendChild(tr);
+    });
+    updateRecipCount();
+  }
+
+  document.getElementById('chkAll').addEventListener('change', function(e){
+    recipients.forEach(function(r){ r.checked = e.target.checked; });
+    renderRecipTable();
+  });
+
+  document.getElementById('addManualRow').addEventListener('click', function(){
+    recipients.push({ id: uid++, nama: '', jawatan: '', checked: true });
+    renderRecipTable(); rebuildPreviewPicker();
+  });
+
+  document.getElementById('previewPicker').addEventListener('change', refreshLivePreview);
+
+  document.getElementById('prevRecip').addEventListener('click', function(){
+    var picker = document.getElementById('previewPicker');
+    if(picker.selectedIndex > 0){
+      picker.selectedIndex -= 1;
+      refreshLivePreview();
+    }
+  });
+  document.getElementById('nextRecip').addEventListener('click', function(){
+    var picker = document.getElementById('previewPicker');
+    if(picker.selectedIndex < picker.options.length - 1){
+      picker.selectedIndex += 1;
+      refreshLivePreview();
+    }
+  });
+
+  // ---------- excel import ----------
+  var dropzone = document.getElementById('dropzone');
+  var fileInput = document.getElementById('fileInput');
+  dropzone.addEventListener('click', function(){ fileInput.click(); });
+  dropzone.addEventListener('dragover', function(e){ e.preventDefault(); dropzone.classList.add('drag'); });
+  dropzone.addEventListener('dragleave', function(){ dropzone.classList.remove('drag'); });
+  dropzone.addEventListener('drop', function(e){
+    e.preventDefault(); dropzone.classList.remove('drag');
+    if(e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', function(){
+    if(fileInput.files && fileInput.files[0]) handleFile(fileInput.files[0]);
+    fileInput.value = '';
+  });
+
+  function handleFile(file){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      try{
+        var data = new Uint8Array(e.target.result);
+        var wb = XLSX.read(data, { type: 'array' });
+        var sheetName = wb.SheetNames[0];
+        var ws = wb.Sheets[sheetName];
+        rawRows = XLSX.utils.sheet_to_json(ws, { header: 1, blankrows: false, defval: '' });
+        if(!rawRows.length){ toast('Fail kosong atau tidak dapat dibaca.'); return; }
+        headerRowIdx = guessHeaderRow(rawRows);
+        openImportWizard();
+      }catch(err){
+        console.error(err);
+        toast('Gagal membaca fail. Pastikan format .xlsx / .xls / .csv.');
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function guessHeaderRow(rows){
+    for(var i=0;i<Math.min(rows.length, 15);i++){
+      var row = rows[i];
+      var joined = row.join(' ').toUpperCase();
+      if(joined.indexOf('NAMA') !== -1) return i;
+    }
+    return 0;
+  }
+
+  function openImportWizard(){
+    document.getElementById('importWizard').style.display = 'block';
+    renderRawPreview();
+    renderMappingOptions();
+    renderImportDataTable();
+  }
+
+  function renderRawPreview(){
+    var tbody = document.querySelector('#rawPreviewTbl tbody');
+    tbody.innerHTML = '';
+    var maxShow = Math.min(rawRows.length, 15);
+    for(var i=0;i<maxShow;i++){
+      var tr = document.createElement('tr');
+      tr.style.cursor = 'pointer';
+      if(i === headerRowIdx) tr.classList.add('rowchosen');
+      (function(rowIndex, trEl){
+        trEl.addEventListener('click', function(){
+          headerRowIdx = rowIndex;
+          renderRawPreview();
+          renderMappingOptions();
+          renderImportDataTable();
+        });
+      })(i, tr);
+
+      var tdIdx = document.createElement('td');
+      tdIdx.textContent = (i === headerRowIdx ? '► ' : '') + 'Baris ' + (i+1);
+      tdIdx.style.whiteSpace = 'nowrap';
+      tdIdx.style.fontWeight = (i === headerRowIdx) ? '700' : '400';
+      tr.appendChild(tdIdx);
+
+      var row = rawRows[i] || [];
+      var maxCols = 8;
+      for(var c=0;c<maxCols;c++){
+        var td = document.createElement('td');
+        td.textContent = row[c] != null ? row[c] : '';
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    }
+    if(rawRows.length > maxShow){
+      var trMore = document.createElement('tr');
+      var tdMore = document.createElement('td');
+      tdMore.colSpan = 9;
+      tdMore.style.color = 'var(--ink-soft)';
+      tdMore.style.fontStyle = 'italic';
+      tdMore.textContent = '… ' + (rawRows.length - maxShow) + ' baris lagi (klik "Import baris dipilih" untuk teruskan)';
+      trMore.appendChild(tdMore);
+      tbody.appendChild(trMore);
+    }
+  }
+
+  function headerLabels(){
+    var row = rawRows[headerRowIdx] || [];
+    return row.map(function(v, i){
+      var label = (v == null || String(v).trim() === '') ? ('Lajur ' + (i+1)) : String(v).trim();
+      return { idx: i, label: label };
+    });
+  }
+
+  function renderMappingOptions(){
+    var labels = headerLabels();
+    var mapNama = document.getElementById('mapNama');
+    var mapJawatan = document.getElementById('mapJawatan');
+    mapNama.innerHTML = '';
+    mapJawatan.innerHTML = '<option value="__none__">— Tiada, guna nilai tetap —</option>';
+    var guessNamaIdx = -1, guessJawatanIdx = -1;
+    labels.forEach(function(l){
+      var up = l.label.toUpperCase();
+      if(guessNamaIdx === -1 && up.indexOf('NAMA') !== -1 && up.indexOf('SEKOLAH') === -1) guessNamaIdx = l.idx;
+      if(guessJawatanIdx === -1 && (up.indexOf('JAWATAN') !== -1 || up.indexOf('PERANAN') !== -1)) guessJawatanIdx = l.idx;
+
+      var o1 = document.createElement('option'); o1.value = l.idx; o1.textContent = l.label;
+      mapNama.appendChild(o1);
+      var o2 = document.createElement('option'); o2.value = l.idx; o2.textContent = l.label;
+      mapJawatan.appendChild(o2);
+    });
+    if(guessNamaIdx !== -1) mapNama.value = guessNamaIdx;
+    if(guessJawatanIdx !== -1) mapJawatan.value = guessJawatanIdx;
+
+    mapNama.onchange = renderImportDataTable;
+    mapJawatan.onchange = function(){
+      document.getElementById('defaultJawatanWrap').style.display =
+        (mapJawatan.value === '__none__') ? 'flex' : 'none';
+      renderImportDataTable();
+    };
+    document.getElementById('defaultJawatanWrap').style.display =
+      (mapJawatan.value === '__none__') ? 'flex' : 'none';
+    document.getElementById('defaultJawatan').oninput = renderImportDataTable;
+  }
+
+  function getDataRows(){
+    // rows after header row, skipping fully-empty rows
+    var out = [];
+    for(var i = headerRowIdx + 1; i < rawRows.length; i++){
+      var row = rawRows[i] || [];
+      var hasContent = row.some(function(v){ return v != null && String(v).trim() !== ''; });
+      if(hasContent) out.push({ srcIdx: i, row: row });
+    }
+    return out;
+  }
+
+  var importSelections = {}; // srcIdx -> boolean
+
+  function renderImportDataTable(){
+    var namaIdx = parseInt(document.getElementById('mapNama').value, 10);
+    var jawatanSel = document.getElementById('mapJawatan').value;
+    var defaultJawatan = document.getElementById('defaultJawatan').value;
+    var dataRows = getDataRows();
+
+    var thead = document.querySelector('#importDataTbl thead');
+    thead.innerHTML = '<tr><th class="chk"></th><th>Nama</th><th>Jawatan</th></tr>';
+
+    var tbody = document.querySelector('#importDataTbl tbody');
+    tbody.innerHTML = '';
+
+    dataRows.forEach(function(d){
+      if(!(d.srcIdx in importSelections)) importSelections[d.srcIdx] = true;
+      var nama = isNaN(namaIdx) ? '' : (d.row[namaIdx] != null ? String(d.row[namaIdx]).trim() : '');
+      var jawatan = (jawatanSel === '__none__')
+        ? (defaultJawatan || '')
+        : (d.row[parseInt(jawatanSel,10)] != null ? String(d.row[parseInt(jawatanSel,10)]).trim() : '');
+
+      var tr = document.createElement('tr');
+      var tdChk = document.createElement('td'); tdChk.className = 'chk';
+      var cb = document.createElement('input'); cb.type = 'checkbox';
+      cb.checked = !!importSelections[d.srcIdx] && nama !== '';
+      if(nama === '') cb.disabled = true;
+      cb.addEventListener('change', function(){ importSelections[d.srcIdx] = cb.checked; });
+      tdChk.appendChild(cb);
+
+      var tdNama = document.createElement('td'); tdNama.textContent = nama || '(kosong)';
+      var tdJawatan = document.createElement('td'); tdJawatan.textContent = jawatan || '—';
+
+      tr.appendChild(tdChk); tr.appendChild(tdNama); tr.appendChild(tdJawatan);
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('rawRowCount').textContent = dataRows.length + ' baris data dikesan';
+  }
+
+  document.getElementById('selAllRows').addEventListener('click', function(){
+    getDataRows().forEach(function(d){ importSelections[d.srcIdx] = true; });
+    renderImportDataTable();
+  });
+  document.getElementById('selNoneRows').addEventListener('click', function(){
+    getDataRows().forEach(function(d){ importSelections[d.srcIdx] = false; });
+    renderImportDataTable();
+  });
+
+  document.getElementById('cancelImport').addEventListener('click', function(){
+    document.getElementById('importWizard').style.display = 'none';
+    rawRows = []; headerRowIdx = null; importSelections = {};
+  });
+
+  document.getElementById('doImport').addEventListener('click', function(){
+    var namaIdx = parseInt(document.getElementById('mapNama').value, 10);
+    var jawatanSel = document.getElementById('mapJawatan').value;
+    var defaultJawatan = document.getElementById('defaultJawatan').value;
+    var dataRows = getDataRows();
+    var added = 0;
+
+    dataRows.forEach(function(d){
+      if(!importSelections[d.srcIdx]) return;
+      var nama = isNaN(namaIdx) ? '' : (d.row[namaIdx] != null ? String(d.row[namaIdx]).trim() : '');
+      if(!nama) return;
+      var jawatan = (jawatanSel === '__none__')
+        ? (defaultJawatan || '')
+        : (d.row[parseInt(jawatanSel,10)] != null ? String(d.row[parseInt(jawatanSel,10)]).trim() : '');
+      recipients.push({ id: uid++, nama: nama, jawatan: jawatan, checked: true });
+      added++;
+    });
+
+    renderRecipTable();
+    rebuildPreviewPicker();
+    document.getElementById('importWizard').style.display = 'none';
+    rawRows = []; headerRowIdx = null; importSelections = {};
+    toast(added + ' penerima berjaya diimport.');
+  });
+
+  // ---------- generation ----------
+  function sanitizeFilename(s){
+    return (s || 'sijil').replace(/[\\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
+  }
+
+  function buildOffscreenCert(recipient){
+    var host = document.createElement('div');
+    host.style.position = 'fixed';
+    host.style.left = '-99999px';
+    host.style.top = '0';
+    host.style.width = '794px';
+    host.style.height = '1123px';
+    host.innerHTML = document.getElementById('certLive').outerHTML;
+    document.body.appendChild(host);
+    var certEl = host.firstElementChild;
+    fillCert(certEl, recipient);
+    return { host: host, certEl: certEl };
+  }
+
+  function captureCertToCanvas(certEl){
+    return document.fonts.ready.then(function(){
+      return html2canvas(certEl, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+    });
+  }
+
+  function setProgress(done, total, label){
+    var wrap = document.getElementById('progressWrap');
+    wrap.style.display = total ? 'block' : 'none';
+    document.getElementById('progressFill').style.width = (total ? Math.round(done/total*100) : 0) + '%';
+    document.getElementById('progressLabel').textContent = label || (done + ' / ' + total);
+  }
+
+  function getSelectedRecipients(){
+    return recipients.filter(function(r){ return r.checked && r.nama && r.nama.trim(); });
+  }
+
+  document.getElementById('genZip').addEventListener('click', function(){
+    var selected = getSelectedRecipients();
+    if(!selected.length){ toast('Tiada penerima dipilih / nama kosong.'); return; }
+    var btn = this; btn.disabled = true;
+    var zip = new JSZip();
+    var used = {};
+    var i = 0;
+
+    function step(){
+      if(i >= selected.length){
+        setProgress(selected.length, selected.length, 'Menyediakan ZIP…');
+        zip.generateAsync({ type: 'blob' }).then(function(blob){
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'Sijil_' + sanitizeFilename(fixedFields().program).slice(0,40) + '.zip';
+          document.body.appendChild(a); a.click(); a.remove();
+          btn.disabled = false;
+          setProgress(0,0);
+          toast('Selesai — ' + selected.length + ' sijil dimuat turun dalam ZIP.');
+        });
+        return;
+      }
+      var r = selected[i];
+      setProgress(i, selected.length, 'Menjana sijil ' + (i+1) + ' / ' + selected.length + ' — ' + r.nama);
+      var built = buildOffscreenCert(r);
+      captureCertToCanvas(built.certEl).then(function(canvas){
+        var imgData = canvas.toDataURL('image/jpeg', 0.95);
+        var pdf = new window.jspdf.jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+        var blob = pdf.output('blob');
+        var base = sanitizeFilename(r.nama);
+        var name = base; var n = 1;
+        while(used[name]){ n++; name = base + ' (' + n + ')'; }
+        used[name] = true;
+        zip.file('Sijil_' + name + '.pdf', blob);
+        document.body.removeChild(built.host);
+        i++;
+        setTimeout(step, 10);
+      }).catch(function(err){
+        console.error(err);
+        document.body.removeChild(built.host);
+        i++;
+        setTimeout(step, 10);
+      });
+    }
+    step();
+  });
+
+  document.getElementById('genOnePdf').addEventListener('click', function(){
+    var selected = getSelectedRecipients();
+    if(!selected.length){ toast('Tiada penerima dipilih / nama kosong.'); return; }
+    var btn = this; btn.disabled = true;
+    var pdf = new window.jspdf.jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+    var i = 0;
+
+    function step(){
+      if(i >= selected.length){
+        pdf.save('Sijil_' + sanitizeFilename(fixedFields().program).slice(0,40) + '.pdf');
+        btn.disabled = false;
+        setProgress(0,0);
+        toast('Selesai — 1 PDF dengan ' + selected.length + ' muka surat dimuat turun.');
+        return;
+      }
+      var r = selected[i];
+      setProgress(i, selected.length, 'Menjana muka surat ' + (i+1) + ' / ' + selected.length + ' — ' + r.nama);
+      var built = buildOffscreenCert(r);
+      captureCertToCanvas(built.certEl).then(function(canvas){
+        var imgData = canvas.toDataURL('image/jpeg', 0.95);
+        if(i > 0) pdf.addPage('a4', 'p');
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+        document.body.removeChild(built.host);
+        i++;
+        setTimeout(step, 10);
+      }).catch(function(err){
+        console.error(err);
+        document.body.removeChild(built.host);
+        i++;
+        setTimeout(step, 10);
+      });
+    }
+    step();
+  });
+
+  // ---------- print (direct, like Word mail merge) ----------
+  function buildPrintPages(list){
+    var printArea = document.getElementById('printArea');
+    printArea.innerHTML = '';
+    list.forEach(function(r){
+      var page = document.createElement('div');
+      page.className = 'print-page';
+      var certClone = document.getElementById('certLive').cloneNode(true);
+      certClone.removeAttribute('id');
+      fillCert(certClone, r);
+      page.appendChild(certClone);
+      printArea.appendChild(page);
+    });
+  }
+
+  function doPrint(list){
+    if(!list.length){ toast('Tiada penerima untuk dicetak.'); return; }
+    buildPrintPages(list);
+    document.fonts.ready.then(function(){
+      setTimeout(function(){ window.print(); }, 60);
+    });
+  }
+
+  window.addEventListener('afterprint', function(){
+    document.getElementById('printArea').innerHTML = '';
+  });
+
+  document.getElementById('printAll').addEventListener('click', function(){
+    var list = recipients.filter(function(r){ return r.nama && r.nama.trim(); });
+    doPrint(list);
+  });
+  document.getElementById('printChecked').addEventListener('click', function(){
+    doPrint(getSelectedRecipients());
+  });
+  document.getElementById('printOne').addEventListener('click', function(){
+    var r = currentPreviewRecipient();
+    if(!r){ toast('Tiada pratonton dipilih.'); return; }
+    doPrint([r]);
+  });
+
+  // ---------- init ----------
+  function init(){
+    recipients.push({ id: uid++, nama: 'Noor Syamsila binti Yahya', jawatan: 'Jurulatih Utama', checked: true });
+    renderRecipTable();
+    rebuildPreviewPicker();
+    rescaleStage();
+    refreshLivePreview();
+  }
+  window.addEventListener('load', function(){
+    setTimeout(rescaleStage, 50);
+  });
+  init();
+})();
+</script>
+</body>
+</html>
