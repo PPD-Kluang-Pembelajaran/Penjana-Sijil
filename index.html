@@ -186,6 +186,44 @@
   }
   .dropzone:hover, .dropzone.drag{border-color:var(--accent); background:var(--accent-soft);}
   .dropzone strong{color:var(--ink);}
+
+  .format-note{
+    background:var(--accent-soft);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    font-size:13px;
+    color:var(--ink);
+    line-height:1.55;
+    margin-bottom:14px;
+  }
+  .format-note code{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:5px;
+    padding:1px 6px;
+    font-size:12.5px;
+    font-weight:600;
+  }
+  .format-sample{
+    border-collapse:collapse;
+    margin:10px 0;
+    font-size:12.5px;
+  }
+  .format-sample th, .format-sample td{
+    border:1px solid var(--line);
+    padding:5px 12px;
+    text-align:left;
+    background:var(--panel);
+  }
+  .format-sample th{font-weight:700;color:var(--ink);}
+  .format-sample td{color:var(--ink-soft);}
+  .format-why{
+    display:block;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
   input[type=file]{display:none;}
 
   table.datatbl{width:100%;border-collapse:collapse;font-size:13px;}
@@ -257,9 +295,14 @@
     font-weight:700;
     font-size:72pt;
     color:#FF0000;
-    margin:0 0 10px;
+    margin:0;
     line-height:1;
     white-space:nowrap;
+  }
+  .cert .spacer-bagu12{
+    font-family:'Baguet Script','Tangerine',cursive;
+    font-size:12pt;
+    line-height:1.15;
   }
   .cert .line-cal{
     font-family:'Calibri','Carlito','Libre Franklin',sans-serif;
@@ -282,8 +325,15 @@
     font-weight:700;
     font-size:18pt;
     text-transform:uppercase;
-    margin:14px 0 14px;
+    margin:6px 0 0;
+    line-height:1.3;
+    white-space:pre-line;
     word-break:break-word;
+  }
+  .cert .spacer-lf18{
+    font-family:'Libre Franklin',sans-serif;
+    font-size:18pt;
+    line-height:1.15;
   }
   .cert .role{
     font-family:'Libre Franklin',sans-serif;
@@ -308,16 +358,18 @@
     font-size:14pt;
     text-transform:uppercase;
     margin-top:2px;
+    white-space:pre-line;
   }
   .cert .spacer{flex:1;}
   .cert .sign{
-    text-align:right;
+    align-self:flex-end;
+    text-align:center;
     padding-right:14px;
     font-family:'Libre Franklin',sans-serif;
     font-size:12pt;
     line-height:1.5;
   }
-  .cert .sign .sig-name{font-weight:700;}
+  .cert .sign .sig-name{font-weight:700;text-transform:uppercase;}
   .cert .blank-16{
     font-family:'Libre Franklin',sans-serif;
     font-size:16pt;
@@ -480,11 +532,12 @@
   <div class="modal-box">
     <h2 class="modal-title">Panduan Ringkas</h2>
     <ol class="modal-list">
-      <li>Pilih template sijil yang hendak digunakan.</li>
+      <li>Pilih templat sijil yang hendak digunakan.</li>
       <li>Isi maklumat program: tajuk, tarikh, tempat dan penandatangan.</li>
-      <li>Muat naik senarai Excel (hanya lajur <strong>NAMA</strong> & <strong>JAWATAN</strong>) atau tambah penerima secara manual.</li>
+      <li>Muat naik senarai Excel atau tambah penerima secara manual.</li>
       <li>Semak pratonton, kemudian muat turun atau cetak semua sijil sekali gus.</li>
     </ol>
+    <p class="modal-note">Fail Excel eloknya hanya mengandungi dua lajur — <strong>NAMA</strong> dan <strong>JAWATAN</strong> — tanpa jadual atau data lain, untuk elakkan kesilapan semasa import.</p>
     <p class="modal-note">Semua data diproses dalam pelayar anda sahaja dan tidak dimuat naik ke pelayan mana-mana.</p>
     <button class="primary" id="introOkBtn" style="width:100%;">Faham, Teruskan</button>
   </div>
@@ -494,7 +547,7 @@
   <div class="wrap" style="max-width:900px;">
     <header class="top" style="margin-bottom:20px;">
       <div>
-        <h1>Pilih Template Sijil</h1>
+        <h1>Pilih Templat Sijil</h1>
         <p>Pilih reka bentuk sijil yang hendak digunakan untuk kumpulan ini.</p>
       </div>
     </header>
@@ -528,8 +581,9 @@
         <input type="text" id="f_org" value="Pejabat Pendidikan Daerah Kluang">
       </label>
       <label class="field">
-        <span class="lbl">Tempat</span>
-        <input type="text" id="f_tempat" value="Dewan SK Seri Intan, Kluang">
+        <span class="lbl">Tempat <span style="font-weight:400;">(baris baharu untuk daerah, cth: SMK Seri Perdana, [Enter] Kluang)</span></span>
+        <textarea id="f_tempat" rows="2">Dewan SK Seri Intan,
+Kluang</textarea>
       </label>
     </div>
 
@@ -545,7 +599,7 @@
       </label>
       <label class="field">
         <span class="lbl">&nbsp;</span>
-        <span style="font-size:12.5px;color:var(--ink-soft);padding-top:8px;">*12 – 13 Oktober 2026</span>
+        <span style="font-size:12.5px;color:var(--ink-soft);padding-top:8px;">Boleh taip julat tarikh terus, cth: "12 – 13 Oktober 2026"</span>
       </label>
     </div>
 
@@ -569,35 +623,16 @@
   <!-- STEP 2: RECIPIENTS -->
   <section class="card">
     <h2><span class="num">2</span> Data penerima</h2>
-    <p class="hint">Muat naik fail Excel, atau tambah penerima secara manual. Import boleh dilakukan berkali-kali; setiap import akan ditambah ke senarai yang sama.</p>
+    <p class="hint">Muat naik fail Excel untuk import pukal, atau tambah penerima secara manual. Import boleh dilakukan berkali-kali; setiap import akan ditambah ke senarai yang sama.</p>
 
-    <!-- EXCEL FORMAT REMINDER -->
-    <div style="background:var(--accent-soft); border:1px solid var(--accent); border-radius:10px; padding:16px; margin-bottom:18px; font-size:13.5px; color:var(--ink);">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-        <span style="font-size:18px;">⚠️</span>
-        <strong style="font-size:14px;color:var(--accent);">Penting: Format Fail Excel</strong>
-      </div>
-      <p style="margin:0 0 12px; color:var(--ink-soft); line-height:1.5;">
-        Sila pastikan fail Excel anda <strong>hanya mengandungi 2 lajur</strong> seperti format di bawah. Elakkan data tambahan (seperti No. KP, Sekolah, dll.) untuk mengelakkan kekeliruan semasa pemetaan lajur (mapping).
-      </p>
-      <div style="background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px; font-family:monospace; font-size:13px; color:var(--ink);">
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; font-weight:700; border-bottom:1.5px solid var(--line); padding-bottom:8px; margin-bottom:8px; color:var(--accent);">
-          <div>NAMA</div>
-          <div>JAWATAN</div>
-        </div>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-          <div>NOOR SYAMSILA BINTI YAHYA</div>
-          <div>JURULATIH UTAMA</div>
-        </div>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:6px;">
-          <div>AHMAD BIN ALI</div>
-          <div>FASILITATOR</div>
-        </div>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:6px;">
-          <div>SITI BINTI ABU</div>
-          <div>PESERTA</div>
-        </div>
-      </div>
+    <div class="format-note">
+      <strong>Format Excel yang disyorkan:</strong> gunakan fail dengan dua lajur sahaja — <code>NAMA</code> dan <code>JAWATAN</code> — tanpa data atau jadual lain di dalam fail yang sama.
+      <table class="format-sample">
+        <tr><th>NAMA</th><th>JAWATAN</th></tr>
+        <tr><td>Ahmad bin Ali</td><td>Fasilitator</td></tr>
+        <tr><td>Siti binti Hassan</td><td>Jurulatih</td></tr>
+      </table>
+      <span class="format-why">Fail mentah yang mengandungi pelbagai jadual atau data bercampur boleh menyukarkan proses import.</span>
     </div>
 
     <div id="dropzone" class="dropzone">
@@ -709,9 +744,11 @@
               <div class="spacer-55">&nbsp;</div>
               <div class="spacer-38">&nbsp;</div>
               <div class="title">Sijil Penghargaan</div>
+              <div class="spacer-bagu12">&nbsp;</div>
               <div class="line-cal">Dengan sukacitanya <span id="c_org">Pejabat Pendidikan Daerah Kluang</span></div>
               <div class="line-cal">merakamkan setinggi-tinggi penghargaan dan terima kasih kepada</div>
               <div class="name" id="c_name">NOOR SYAMSILA BINTI YAHYA</div>
+              <div class="spacer-lf18">&nbsp;</div>
               <div class="line-cal">atas sumbangan khidmat bakti yang cemerlang sebagai</div>
               <div class="role" id="c_role">JURULATIH UTAMA</div>
               <div class="program" id="c_program">AKTIVITI PELAN PEMBANGUNAN KOMPETENSI TAHUN 2026</div>
@@ -796,6 +833,7 @@
 
   function fillCert(container, recipient){
     var ff = fixedFields();
+    container.querySelector('.line-i span, #c_org') ; // noop safety
     var q = function(sel){ return container.querySelector(sel); };
     q('#c_org') && (q('#c_org').textContent = ff.org);
     var nameEl = q('#c_name'); if(nameEl) nameEl.textContent = (recipient ? recipient.nama : "") || "—";
@@ -849,7 +887,7 @@
     recipients.forEach(function(r){
       var o = document.createElement('option');
       o.value = r.id;
-      o.textContent = (r.nama || '(tiada nama)') + (r.jawatan ? ' — ' + r.jawatan : '');
+      o.textContent = (r.nama || '(tiada nama)').replace(/\r?\n/g, ' – ') + (r.jawatan ? ' — ' + r.jawatan : '');
       picker.appendChild(o);
     });
     if(recipients.length){
@@ -877,10 +915,12 @@
       tdNum.textContent = idx + 1;
 
       var tdNama = document.createElement('td');
-      var inpNama = document.createElement('input');
-      inpNama.type = 'text';
+      var inpNama = document.createElement('textarea');
+      inpNama.rows = 1;
       inpNama.value = r.nama;
-      inpNama.placeholder = 'Nama penuh';
+      inpNama.placeholder = 'Nama penuh (Enter untuk baris sekolah)';
+      inpNama.style.resize = 'vertical';
+      inpNama.style.minHeight = '30px';
       inpNama.addEventListener('input', function(){ r.nama = inpNama.value; rebuildPreviewPicker(); });
       tdNama.appendChild(inpNama);
 
