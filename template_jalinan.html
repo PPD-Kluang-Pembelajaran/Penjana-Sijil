@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Penjana Sijil - Penataran Jurulatih Utama</title>
+<title>Penjana Sijil - Sijil Jalinan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;700&family=Libre+Franklin:wght@400;700;800&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;700&family=Libre+Franklin:wght@400;700;800&family=Tangerine:wght@700&family=Carlito:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -62,46 +62,50 @@
   .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
   .count-badge{font-size:12.5px;color:var(--ink-soft);margin-left:auto;}
 
-  /* --- CERTIFICATE (PENATARAN) --- */
+  /* --- CERTIFICATE (JALINAN) - disusun mengikut imej rujukan --- */
   .preview-shell{ display:flex; gap:22px; align-items:flex-start; flex-wrap:wrap; }
   .preview-controls{ flex:1 1 260px; min-width:240px; display:flex; flex-direction:column; gap:12px; }
   .preview-stage{ flex:2 1 420px; display:flex; justify-content:center; }
   .stage-frame{ width:100%; max-width:460px; aspect-ratio:210/297; position:relative; overflow:hidden; border-radius:6px; box-shadow:0 10px 34px rgba(0,0,0,.18); }
   .cert-scale-wrap{ position:absolute; top:0; left:0; width:794px; height:1123px; transform-origin:top left; }
-  .cert{ width:794px; height:1123px; background:#ffffff; color:#000000; position:relative; padding:96px 96px 56px; font-family:'Libre Franklin',sans-serif; text-align:center; display:flex; flex-direction:column; }
-  
-  /* DIKEMBALIKAN KEPADA SAIZ ASAL SUPAYA KEDUDUKAN TEGAK SAMA SEPERTI SIJIL ASAL */
-  .cert .spacer-55{ font-size:55pt; line-height:1.15; }
-  .cert .spacer-38{ font-size:38pt; line-height:1.15; }
-  
-  /* Tajuk utama: font asal (Edwardian Script ITC, 72pt) */
-  .cert .title{ 
-    font-family:'Edwardian Script ITC','Tangerine',cursive; 
-    font-weight:700; font-size:72pt; color:#FF0000; margin:0; line-height:1; white-space:nowrap; 
+  .cert{
+    width:794px; height:1123px; background:#ffffff; color:#000000; position:relative;
+    padding:253px 90px 0; text-align:center;
+    font-family:'Calibri','Carlito',sans-serif;
+    display:flex; flex-direction:column; align-items:center;
   }
-  
-  /* Subtajuk: Arial Narrow 14pt seperti diminta */
-  .cert .subtitle{ 
-    font-family:'Arial Narrow','Libre Franklin',sans-serif; 
-    font-weight:100; font-size:14pt; color:#FF0000; text-transform:uppercase; 
-    letter-spacing:1px; margin:4px 0 0 0; line-height:1.3; 
+
+  /* Tajuk: skrip merah */
+  .cert .title{
+    font-family:'Edwardian Script ITC','EdwardianScriptITC','Tangerine', cursive; font-weight:700; font-size:72pt; color:#FF0000;
+    margin:0 0 47px 0; line-height:0.85; white-space:nowrap;
   }
-  
-  .cert .spacer-bagu12{ font-family:'Tangerine',cursive; font-size:24pt; line-height:1; }
-  .cert .line-cal{ font-family:'Calibri','Libre Franklin',sans-serif; font-style:italic; font-weight:400; font-size:14pt; color:#000000; line-height:1.5; }
-  .cert .line-an{ font-family:'Arial Narrow','Libre Franklin',sans-serif; font-style:italic; font-weight:400; font-size:14pt; color:#000000; line-height:1.2; }
-  .cert .name{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:18pt; text-transform:uppercase; margin:0; line-height:1.3; white-space:pre-line; word-break:break-word; }
-  .cert .spacer-lf18{ font-family:'Libre Franklin',sans-serif; font-size:2pt; line-height:1; }
-  .cert .role{ font-family:'Libre Franklin',sans-serif; font-weight:800; font-size:18pt; text-transform:uppercase; margin-top:14px; }
-  .cert .program{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:14pt; text-transform:uppercase; line-height:1.4; margin-top:2px; padding:0 6px; }
-  .cert .datevenue{ margin-top:22px; }
-  .cert .datevenue .val{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:14pt; text-transform:uppercase; margin-top:2px; white-space:pre-line; line-height:1.2; }
-  .cert .spacer{ flex:1; }
-  .cert .sign{ position: absolute; bottom: 90px; right: 30px; width: 400px; text-align: center; font-family: 'Calibri', sans-serif; font-size: 14pt; line-height: 1.5; color: #000000; }
-  .cert .sign .sig-space { height: 45px; }
-  .cert .sign .sig-name { font-weight: 700; text-transform: uppercase; }
-  .cert .sign .sig-bottom-space { height: 18px; }
-  .cert .blank-cal14{ font-family:'Calibri','Libre Franklin',sans-serif; font-size:14pt; line-height:1.15; }
+
+  /* Ayat pertama: Calibri 16pt italic */
+  .cert .ayat1{
+    font-family:'Calibri','Carlito',sans-serif; font-style:italic; font-weight:400;
+    font-size:16pt; line-height:33px; color:#000; max-width:480px; margin:0;
+  }
+
+  /* Nama penerima: bold, huruf besar */
+  .cert .name{
+    font-family:'Libre Franklin', sans-serif; font-weight:700; font-size:21pt;
+    text-transform:uppercase; color:#000; line-height:34px;
+    white-space:pre-line; word-break:break-word; max-width:640px; margin:47px 0 30px 0;
+  }
+
+  /* Ayat kedua: Calibri 18pt italic */
+  .cert .ayat2{
+    font-family:'Calibri','Carlito',sans-serif; font-style:italic; font-weight:400;
+    font-size:18pt; line-height:33px; color:#000; max-width:610px; margin:0;
+  }
+
+  /* Tandatangan: dikedudukan di kanan-tengah seperti imej rujukan */
+  .cert .sign-right{
+    position:absolute; top:931px; left:301px; width:360px; text-align:center;
+    font-family:'Calibri','Carlito',sans-serif; font-size:13pt; line-height:24px; color:#000;
+  }
+  .cert .sign-right .sig-name{ font-weight:700; text-transform:uppercase; }
 
   .toast{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--ink); color:var(--paper); padding:10px 18px; border-radius:10px; font-size:13.5px; box-shadow:0 8px 24px rgba(0,0,0,.25); opacity:0; pointer-events:none; transition:opacity .2s ease, bottom .2s ease; z-index:50; }
   .toast.show{ opacity:1; bottom:32px; }
@@ -120,7 +124,7 @@
 <div class="wrap" id="mainApp">
   <header class="top">
     <div>
-      <h1>Penjana Sijil <span style="font-size:14px; color:var(--ink-soft); font-weight:400;">— Penataran Jurulatih Utama</span></h1>
+      <h1>Penjana Sijil <span style="font-size:14px; color:var(--ink-soft); font-weight:400;">— Sijil Jalinan</span></h1>
       <p>Isi maklumat sijil, tambah penerima, dan jana sijil secara pukal.</p>
     </div>
     <a class="back-link" href="index.html">← Kembali ke senarai template</a>
@@ -128,22 +132,21 @@
 
   <section class="card">
     <h2><span class="num">1</span> Tetapan sijil (tetap untuk semua penerima)</h2>
-    <p class="hint">Maklumat berikut adalah tetap bagi setiap sijil. Hanya nama dan jawatan penerima yang berbeza.</p>
-    <div class="grid2" style="margin-bottom:14px;">
-      <label class="field"><span class="lbl">Nama organisasi penganjur</span><input type="text" id="f_org" value="Pejabat Pendidikan Daerah Kluang"></label>
-      <label class="field"><span class="lbl">Tempat <span style="font-weight:400;">(baris baharu untuk daerah)</span></span><textarea id="f_tempat" rows="2">Dewan SK Seri Intan,
-Kluang</textarea></label>
-    </div>
-    <label class="field" style="margin-bottom:14px;"><span class="lbl">Tajuk / nama program</span><textarea id="f_program">Penataran Jurulatih Utama 2026</textarea></label>
-    <div class="grid2" style="margin-bottom:14px;">
-      <label class="field"><span class="lbl">Tarikh</span><input type="text" id="f_tarikh" value="23 – 24 September 2026"></label>
-      <label class="field"><span class="lbl">&nbsp;</span><span style="font-size:12.5px;color:var(--ink-soft);padding-top:8px;">Boleh taip julat tarikh terus</span></label>
-    </div>
-    
-    <!-- BAHAGIAN PENANDATANGAN DIKEMASKINI -->
+    <p class="hint">Maklumat berikut adalah tetap bagi setiap sijil. Hanya nama penerima yang berbeza.</p>
+
+    <label class="field" style="margin-bottom:14px;">
+      <span class="lbl">Ayat pertama (termasuk nama organisasi penganjur)</span>
+      <textarea id="f_ayat1" rows="3">Pejabat Pendidikan Daerah Kluang dengan penuh takzimnya merakamkan ucapan setinggi-tinggi penghargaan dan terima kasih kepada</textarea>
+    </label>
+
+    <label class="field" style="margin-bottom:14px;">
+      <span class="lbl">Ayat kedua (selepas nama penerima)</span>
+      <textarea id="f_ayat2" rows="3">atas sumbangan dan kerjasama dalam membantu serta menyokong pelaksanaan pelbagai program dan inisiatif sepanjang tahun 2025.</textarea>
+    </label>
+
     <p class="hint" style="margin-top:18px;margin-bottom:10px;"><strong>Penandatangan</strong></p>
     <div class="grid3">
-      <label class="field"><span class="lbl">Nama penandatangan</span><input type="text" id="f_signName" value="Haji Ayub bin Ibrahim"></label>
+      <label class="field"><span class="lbl">Nama penandatangan</span><input type="text" id="f_signName" value="Tuan Haji Ayub bin Ibrahim"></label>
       <label class="field"><span class="lbl">Jawatan</span><input type="text" id="f_signRole" value="Pegawai Pendidikan Daerah"></label>
       <label class="field"><span class="lbl">Organisasi penandatangan</span><input type="text" id="f_signOrg" value="Pejabat Pendidikan Daerah Kluang"></label>
     </div>
@@ -151,7 +154,7 @@ Kluang</textarea></label>
 
   <section class="card">
     <h2><span class="num">2</span> Data penerima</h2>
-    <p class="hint">Muat naik fail Excel (2 lajur: NAMA, JAWATAN) atau tambah manual.</p>
+    <p class="hint">Muat naik fail Excel (1 lajur: NAMA) atau tambah manual. Untuk sijil jalinan, nama boleh berupa organisasi.</p>
     <div class="dropzone" id="dropzone"><strong>Klik untuk pilih fail Excel</strong> atau seret & lepaskan di sini<input type="file" id="fileInput" accept=".xlsx,.xls,.csv"></div>
     <div style="margin-top:22px;">
       <div class="toolbar">
@@ -161,7 +164,7 @@ Kluang</textarea></label>
       </div>
       <div class="scrollx" style="border:1px solid var(--line);border-radius:10px;">
         <table class="datatbl recip-table" id="recipTbl">
-          <thead><tr><th class="chk"><input type="checkbox" id="chkAll"></th><th style="width:34px;">#</th><th>Nama</th><th>Jawatan</th><th class="actions"></th></tr></thead>
+          <thead><tr><th class="chk"><input type="checkbox" id="chkAll"></th><th style="width:34px;">#</th><th>Nama Penerima</th><th class="actions"></th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -191,36 +194,15 @@ Kluang</textarea></label>
         <div class="stage-frame" id="stageFrame">
           <div class="cert-scale-wrap" id="certScaleWrap">
             <div class="cert" id="certLive">
-              <div class="spacer-55">&nbsp;</div>
-              <div class="spacer-38">&nbsp;</div>
               <div class="title">Sijil Penghargaan</div>
-              
-              <div class="spacer-bagu12">&nbsp;</div>
-              <div class="line-cal"><span id="c_org">Pejabat Pendidikan Daerah Kluang</span> dengan penuh takzim merakamkan</div>
-              <div class="line-cal">setinggi-tinggi penghargaan dan tahniah kepada</div>
-              <div class="blank-cal14">&nbsp;</div>
-              <div class="name" id="c_name">NOOR SYAMSILA BINTI YAHYA</div>
-              <div class="spacer-lf18">&nbsp;</div>
-              <div class="line-cal">atas sumbangan khidmat bakti yang cemerlang sebagai</div>
-              <div class="role" id="c_role">JURULATIH UTAMA</div>
-              <div class="program" id="c_program">PENATARAN JURULATIH UTAMA 2026</div>
-              <div class="datevenue">
-                <div class="line-an">pada</div>
-                <div class="val val-tarikh" id="c_tarikh">23 – 24 SEPTEMBER 2026</div>
-                <div class="line-an" style="margin-top:20px;"></div>
-                <div class="line-an" style="margin-top:2px;">bertempat di</div>
-                <div class="val val-tempat" id="c_tempat">DEWAN SK SERI INTAN, KLUANG</div>
-              </div>
-              
-              <!-- BAHAGIAN TANDATANGAN DIKEMASKINI (TIADA LAGI style="display:none;") -->
-              <div class="sign">
-                <div class="sig-space"></div>
-                <div class="sig-name" id="c_signName">(HAJI AYUB BIN IBRAHIM)</div>
+              <div class="ayat1" id="c_ayat1">Pejabat Pendidikan Daerah Kluang dengan penuh takzimnya merakamkan ucapan setinggi-tinggi penghargaan dan terima kasih kepada</div>
+              <div class="name" id="c_name">JABATAN KERJA RAYA (JKR)<br>DAERAH KLUANG</div>
+              <div class="ayat2" id="c_ayat2">atas sumbangan dan kerjasama dalam membantu serta menyokong pelaksanaan pelbagai program dan inisiatif sepanjang tahun 2025.</div>
+              <div class="sign-right">
+                <div class="sig-name" id="c_signName">(TUAN HAJI AYUB BIN IBRAHIM)</div>
                 <div id="c_signRole">Pegawai Pendidikan Daerah</div>
                 <div id="c_signOrg">Pejabat Pendidikan Daerah Kluang</div>
-                <div class="sig-bottom-space"></div>
               </div>
-              
             </div>
           </div>
         </div>
@@ -241,30 +223,20 @@ Kluang</textarea></label>
   "use strict";
   var recipients = [], uid = 1, rawRows = [], headerRowIdx = null;
   var els = {};
-  ["f_org","f_tempat","f_program","f_tarikh","f_signName","f_signRole","f_signOrg"].forEach(function(id){ els[id] = document.getElementById(id); });
+  ["f_ayat1","f_ayat2","f_signName","f_signRole","f_signOrg"].forEach(function(id){ els[id] = document.getElementById(id); });
 
   function toast(msg){ var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._h); toast._h = setTimeout(function(){ t.classList.remove('show'); }, 2400); }
-  function fixedFields(){ return { org: els.f_org.value.trim() || "—", tempat: els.f_tempat.value.trim() || "—", program: els.f_program.value.trim() || "—", tarikh: els.f_tarikh.value.trim() || "—", signName: els.f_signName.value.trim() || "—", signRole: els.f_signRole.value.trim(), signOrg: els.f_signOrg.value.trim() || "—" }; }
+  function fixedFields(){ return { ayat1: els.f_ayat1.value.trim() || "—", ayat2: els.f_ayat2.value.trim() || "—", signName: els.f_signName.value.trim() || "—", signRole: els.f_signRole.value.trim(), signOrg: els.f_signOrg.value.trim() || "—" }; }
   function formatSignName(n){ n = n.trim(); if(!n) return "—"; if(n[0] === "(") return n; return "(" + n + ")"; }
 
   function fillCert(container, recipient){
     var ff = fixedFields();
     var q = function(sel){ return container.querySelector(sel); };
-    q('#c_org') && (q('#c_org').textContent = ff.org);
-    var nameEl = q('#c_name'); if(nameEl) nameEl.textContent = (recipient ? recipient.nama : "") || "—";
-    var roleEl = q('#c_role'); if(roleEl) roleEl.textContent = (recipient ? recipient.jawatan : "") || "—";
-    var progEl = q('#c_program'); if(progEl) progEl.textContent = ff.program;
-    var tarikhEl = q('#c_tarikh'); if(tarikhEl) tarikhEl.textContent = ff.tarikh;
-    var tempatEl = q('#c_tempat'); if(tempatEl) tempatEl.textContent = ff.tempat;
+    var ayat1El = q('#c_ayat1'); if(ayat1El) ayat1El.textContent = ff.ayat1;
+    var nameEl = q('#c_name'); if(nameEl) nameEl.innerHTML = (recipient ? recipient.nama : "") ? recipient.nama.replace(/\n/g, '<br>') : "—";
+    var ayat2El = q('#c_ayat2'); if(ayat2El) ayat2El.textContent = ff.ayat2;
     var signNameEl = q('#c_signName'); if(signNameEl) signNameEl.textContent = formatSignName(ff.signName);
-    
-    // Logik pintar: Paparkan jawatan jika ada nilai, sembunyikan jika kosong
-    var signRoleEl = q('#c_signRole'); 
-    if(signRoleEl) { 
-        signRoleEl.textContent = ff.signRole; 
-        signRoleEl.style.display = ff.signRole ? 'block' : 'none'; 
-    }
-    
+    var signRoleEl = q('#c_signRole'); if(signRoleEl) { signRoleEl.textContent = ff.signRole; signRoleEl.style.display = ff.signRole ? 'block' : 'none'; }
     var signOrgEl = q('#c_signOrg'); if(signOrgEl) signOrgEl.textContent = ff.signOrg;
   }
 
@@ -274,7 +246,7 @@ Kluang</textarea></label>
     if(picker.value) { for(var i=0;i<recipients.length;i++){ if(String(recipients[i].id) === picker.value) { r = recipients[i]; break; } } }
     fillCert(document.getElementById('certLive'), r);
   }
-  [els.f_org, els.f_tempat, els.f_program, els.f_tarikh, els.f_signName, els.f_signRole, els.f_signOrg].forEach(function(el){ el.addEventListener('input', refreshLivePreview); });
+  [els.f_ayat1, els.f_ayat2, els.f_signName, els.f_signRole, els.f_signOrg].forEach(function(el){ el.addEventListener('input', refreshLivePreview); });
 
   function rescaleStage(){
     var frame = document.getElementById('stageFrame');
@@ -296,7 +268,7 @@ Kluang</textarea></label>
     recipients.forEach(function(r){
       var o = document.createElement('option');
       o.value = r.id;
-      o.textContent = (r.nama || '(tiada nama)').replace(/\r?\n/g, ' – ') + (r.jawatan ? ' — ' + r.jawatan : '');
+      o.textContent = (r.nama || '(tiada nama)').replace(/\r?\n/g, ' – ');
       picker.appendChild(o);
     });
     if(recipients.length){
@@ -320,22 +292,18 @@ Kluang</textarea></label>
       var inpNama = document.createElement('textarea'); inpNama.rows = 1; inpNama.value = r.nama; inpNama.style.resize = 'vertical'; inpNama.style.minHeight = '30px';
       inpNama.addEventListener('input', function(){ r.nama = inpNama.value; rebuildPreviewPicker(); });
       tdNama.appendChild(inpNama);
-      var tdJawatan = document.createElement('td');
-      var inpJawatan = document.createElement('input'); inpJawatan.type = 'text'; inpJawatan.value = r.jawatan;
-      inpJawatan.addEventListener('input', function(){ r.jawatan = inpJawatan.value; rebuildPreviewPicker(); });
-      tdJawatan.appendChild(inpJawatan);
       var tdAct = document.createElement('td'); tdAct.className = 'actions';
       var delBtn = document.createElement('button'); delBtn.className = 'icon-del'; delBtn.textContent = '✕';
       delBtn.addEventListener('click', function(){ recipients = recipients.filter(function(x){ return x.id !== r.id; }); renderRecipTable(); rebuildPreviewPicker(); updateRecipCount(); });
       tdAct.appendChild(delBtn);
-      tr.appendChild(tdChk); tr.appendChild(tdNum); tr.appendChild(tdNama); tr.appendChild(tdJawatan); tr.appendChild(tdAct);
+      tr.appendChild(tdChk); tr.appendChild(tdNum); tr.appendChild(tdNama); tr.appendChild(tdAct);
       tbody.appendChild(tr);
     });
     updateRecipCount();
   }
 
   document.getElementById('chkAll').addEventListener('change', function(e){ recipients.forEach(function(r){ r.checked = e.target.checked; }); renderRecipTable(); });
-  document.getElementById('addManualRow').addEventListener('click', function(){ recipients.push({ id: uid++, nama: '', jawatan: '', checked: true }); renderRecipTable(); rebuildPreviewPicker(); });
+  document.getElementById('addManualRow').addEventListener('click', function(){ recipients.push({ id: uid++, nama: '', checked: true }); renderRecipTable(); rebuildPreviewPicker(); });
   document.getElementById('previewPicker').addEventListener('change', refreshLivePreview);
   document.getElementById('prevRecip').addEventListener('click', function(){ var p = document.getElementById('previewPicker'); if(p.selectedIndex > 0){ p.selectedIndex -= 1; refreshLivePreview(); } });
   document.getElementById('nextRecip').addEventListener('click', function(){ var p = document.getElementById('previewPicker'); if(p.selectedIndex < p.options.length - 1){ p.selectedIndex += 1; refreshLivePreview(); } });
@@ -355,22 +323,21 @@ Kluang</textarea></label>
         var wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
         rawRows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, blankrows: false, defval: '' });
         if(!rawRows.length){ toast('Fail kosong.'); return; }
+        headerRowIdx = null;
         for(var i=0;i<Math.min(rawRows.length, 15);i++){ if(rawRows[i].join(' ').toUpperCase().indexOf('NAMA') !== -1) { headerRowIdx = i; break; } }
         if(headerRowIdx === null) headerRowIdx = 0;
-        var namaIdx = -1, jawatanIdx = -1;
+        var namaIdx = -1;
         rawRows[headerRowIdx].forEach(function(v, i){
           var up = String(v).toUpperCase();
-          if(namaIdx === -1 && up.indexOf('NAMA') !== -1) namaIdx = i;
-          if(jawatanIdx === -1 && (up.indexOf('JAWATAN') !== -1 || up.indexOf('PERANAN') !== -1)) jawatanIdx = i;
+          if(namaIdx === -1 && (up.indexOf('NAMA') !== -1 || up.indexOf('ORGANISASI') !== -1 || up.indexOf('PIHAK') !== -1)) namaIdx = i;
         });
         if(namaIdx === -1) namaIdx = 0;
         var added = 0;
-        for(var i = headerRowIdx + 1; i < rawRows.length; i++){
-          var row = rawRows[i];
+        for(var j = headerRowIdx + 1; j < rawRows.length; j++){
+          var row = rawRows[j];
           var nama = row[namaIdx] != null ? String(row[namaIdx]).trim() : '';
           if(!nama) continue;
-          var jawatan = jawatanIdx !== -1 && row[jawatanIdx] != null ? String(row[jawatanIdx]).trim() : '';
-          recipients.push({ id: uid++, nama: nama, jawatan: jawatan, checked: true });
+          recipients.push({ id: uid++, nama: nama, checked: true });
           added++;
         }
         renderRecipTable(); rebuildPreviewPicker();
@@ -401,7 +368,7 @@ Kluang</textarea></label>
       if(i >= selected.length){
         zip.generateAsync({ type: 'blob' }).then(function(blob){
           var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-          a.download = 'Sijil_' + sanitizeFilename(els.f_program.value).slice(0,40) + '.zip';
+          a.download = 'Sijil_Jalinan.zip';
           document.body.appendChild(a); a.click(); a.remove();
           btn.disabled = false; toast('Selesai — ' + selected.length + ' sijil dimuat turun.');
         });
@@ -415,7 +382,7 @@ Kluang</textarea></label>
         var base = sanitizeFilename(r.nama); var name = base; var n = 1;
         while(used[name]){ n++; name = base + ' (' + n + ')'; }
         used[name] = true;
-        zip.file('Sijil_' + name + '.pdf', pdf.output('blob'));
+        zip.file('Sijil_Jalinan_' + name + '.pdf', pdf.output('blob'));
         document.body.removeChild(built.host);
         i++; setTimeout(step, 10);
       }).catch(function(err){ console.error(err); document.body.removeChild(built.host); i++; setTimeout(step, 10); });
@@ -431,7 +398,7 @@ Kluang</textarea></label>
     var i = 0;
     function step(){
       if(i >= selected.length){
-        pdf.save('Sijil_' + sanitizeFilename(els.f_program.value).slice(0,40) + '.pdf');
+        pdf.save('Sijil_Jalinan.pdf');
         btn.disabled = false; toast('Selesai — 1 PDF dimuat turun.');
         return;
       }
@@ -469,7 +436,7 @@ Kluang</textarea></label>
     if(r) doPrint([r]); else toast('Tiada pratonton dipilih.');
   });
 
-  recipients.push({ id: uid++, nama: 'Noor Syamsila binti Yahya', jawatan: 'Jurulatih Utama', checked: true });
+  recipients.push({ id: uid++, nama: 'JABATAN KERJA RAYA (JKR)\nDAERAH KLUANG', checked: true });
   renderRecipTable(); rebuildPreviewPicker(); rescaleStage(); refreshLivePreview();
   window.addEventListener('load', function(){ setTimeout(rescaleStage, 50); });
 })();
