@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Penjana Sijil - Sijil Pencapaian Sekolah TVET</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;700&family=Libre+Franklin:wght@400;700;800&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  :root{
+    --ink:#152238; --ink-soft:#5c6b84; --paper:#f2f6fc; --panel:#ffffff;
+    --line:#dce6f4; --accent:#2f6fed; --accent-hover:#2559c7; --accent-soft:#e8f1fe;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:28px 20px 80px; }
+  header.top{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
+  header.top h1{ font-family:'EB Garamond',serif; font-weight:600; font-size:28px; margin:0; }
+  header.top p{ margin:4px 0 0; color:var(--ink-soft); font-size:14px; }
+  .back-link{ font-size:13px; color:var(--accent); text-decoration:none; font-weight:600; }
+  .back-link:hover{ text-decoration:underline; }
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:24px 26px; margin-bottom:22px; box-shadow:0 1px 2px rgba(21,34,56,.04), 0 8px 24px -12px rgba(47,111,237,.10); }
+  .card h2{ font-family:'EB Garamond',serif; font-size:18px; font-weight:600; margin:0 0 4px; display:flex; align-items:center; gap:10px; }
+  .card h2 .num{ display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:var(--accent); color:#fff; font-size:12px; font-family:'Inter',sans-serif; font-weight:700; }
+  .card .hint{ color:var(--ink-soft); font-size:13.5px; margin:0 0 16px; line-height:1.5; }
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  @media (max-width:720px){ .grid2,.grid3{grid-template-columns:1fr;} }
+  label.field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--ink-soft);}
+  label.field span.lbl{font-weight:600;color:var(--ink);}
+  input[type=text], input[type=number], select, textarea{ font-family:inherit; font-size:14px; padding:10px 12px; border-radius:9px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); width:100%; }
+  textarea{resize:vertical;min-height:44px;line-height:1.4;}
+  input:focus,select:focus,textarea:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  button{ font-family:inherit; cursor:pointer; border:none; border-radius:9px; font-size:13.5px; font-weight:600; padding:10px 16px; transition:transform .08s ease, opacity .15s ease, background .15s ease; }
+  button:active{transform:scale(0.97);}
+  button.primary{background:var(--accent);color:#fff;box-shadow:0 4px 14px -4px rgba(47,111,237,.55);}
+  button.primary:hover{background:var(--accent-hover);}
+  button.primary:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;}
+  button.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent-soft);}
+  button.ghost:hover{background:var(--accent-soft);}
+  button.subtle{background:var(--accent-soft);color:var(--accent);}
+  button.tiny{padding:5px 10px;font-size:12px;border-radius:7px;}
+  button.icon-del{background:transparent;color:#c0394a;padding:5px 8px;}
+  button.icon-del:hover{background:#fbe6e9;}
+  .dropzone{ border:1.5px dashed var(--line); border-radius:12px; padding:22px; text-align:center; color:var(--ink-soft); font-size:13.5px; cursor:pointer; transition:border-color .15s ease, background .15s ease; }
+  .dropzone:hover{border-color:var(--accent); background:var(--accent-soft);}
+  input[type=file]{display:none;}
+  table.datatbl{width:100%;border-collapse:collapse;font-size:13px;}
+  table.datatbl th, table.datatbl td{ padding:7px 8px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+  table.datatbl th{color:var(--ink-soft);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
+  .scrollx{overflow-x:auto;}
+  .recip-table td input, .recip-table td textarea{padding:6px 8px;font-size:13px;}
+  .recip-table td.chk{width:34px;text-align:center;}
+  .recip-table td.actions{width:40px;text-align:center;}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+  .count-badge{font-size:12.5px;color:var(--ink-soft);margin-left:auto;}
+
+  /* --- CERTIFICATE (PENCAPAIAN TVET) --- */
+  .preview-shell{ display:flex; gap:22px; align-items:flex-start; flex-wrap:wrap; }
+  .preview-controls{ flex:1 1 260px; min-width:240px; display:flex; flex-direction:column; gap:12px; }
+  .preview-stage{ flex:2 1 420px; display:flex; justify-content:center; }
+  .stage-frame{ width:100%; max-width:460px; aspect-ratio:210/297; position:relative; overflow:hidden; border-radius:6px; box-shadow:0 10px 34px rgba(0,0,0,.18); }
+  .cert-scale-wrap{ position:absolute; top:0; left:0; width:794px; height:1123px; transform-origin:top left; }
+  .cert{ width:794px; height:1123px; background:#ffffff; color:#000000; position:relative; padding:96px 96px 56px; font-family:'Libre Franklin',sans-serif; text-align:center; display:flex; flex-direction:column; }
+  
+  /* Spacer atas */
+  .cert .spacer-top{ height:200px; }
+  
+  /* Tajuk: Edwardian Script ITC / Tangerine, 72pt, merah */
+  .cert .title{ 
+    font-family:'Edwardian Script ITC','Tangerine',cursive; 
+    font-weight:400; font-size:72pt; color:#FF0000; margin:0; line-height:1; white-space:nowrap; 
+  }
+  
+  /* Ayat Calibri italic 14pt */
+  .cert .line-cal{ 
+    font-family:'Calibri',sans-serif; 
+    font-style:italic; font-weight:400; font-size:14pt; color:#000000; line-height:1.5; 
+    text-align:center;
+  }
+  
+  /* Nama sekolah: Libre Franklin 18pt, bold, uppercase */
+  .cert .name{ 
+    font-family:'Libre Franklin',sans-serif; 
+    font-weight:800; font-size:18pt; text-transform:uppercase; margin:14px 0 14px; line-height:1.3; white-space:pre-line; word-break:break-word; 
+  }
+  
+  /* Pencapaian: Libre Franklin 18pt, bold, uppercase */
+  .cert .achievement{ 
+    font-family:'Libre Franklin',sans-serif; 
+    font-weight:800; font-size:18pt; text-transform:uppercase; margin:0 0 22px; line-height:1.4; white-space:pre-line; word-break:break-word; 
+  }
+  
+  /* Sesi akademik: Libre Franklin 18pt, bold, uppercase */
+  .cert .session{ 
+    font-family:'Libre Franklin',sans-serif; 
+    font-weight:800; font-size:18pt; text-transform:uppercase; margin:0 0 22px; line-height:1.4; white-space:pre-line; word-break:break-word; 
+  }
+  
+  .cert .spacer{ flex:1; }
+  
+  /* Tandatangan di tengah */
+  .cert .sign-center{ 
+    position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%);
+    width: 400px; text-align: center;
+    font-family: 'Calibri', sans-serif; font-size: 14pt; line-height: 1.5; color: #000000; 
+  }
+  .cert .sign-center .sig-space { height: 45px; }
+  .cert .sign-center .sig-name { font-weight: 700; text-transform: uppercase; }
+  .cert .sign-center .sig-bottom-space { height: 18px; }
+
+  .toast{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--ink); color:var(--paper); padding:10px 18px; border-radius:10px; font-size:13.5px; box-shadow:0 8px 24px rgba(0,0,0,.25); opacity:0; pointer-events:none; transition:opacity .2s ease, bottom .2s ease; z-index:50; }
+  .toast.show{ opacity:1; bottom:32px; }
+  #printArea{ display:none; }
+  @media print{
+    body > .wrap, body > .toast { display:none !important; }
+    #printArea{ display:block !important; position:absolute; top:0; left:0; }
+    #printArea .print-page{ width:210mm; height:297mm; page-break-after:always; overflow:hidden; }
+    #printArea .cert{ width:210mm !important; height:297mm !important; transform:none !important; }
+    @page{ size:A4 portrait; margin:0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap" id="mainApp">
+  <header class="top">
+    <div>
+      <h1>Penjana Sijil <span style="font-size:14px; color:var(--ink-soft); font-weight:400;">— Sijil Pencapaian Sekolah TVET</span></h1>
+      <p>Isi maklumat sijil, tambah penerima, dan jana sijil secara pukal.</p>
+    </div>
+    <a class="back-link" href="index.html">← Kembali ke senarai template</a>
+  </header>
+
+  <section class="card">
+    <h2><span class="num">1</span> Tetapan sijil (tetap untuk semua penerima)</h2>
+    <p class="hint">Maklumat berikut adalah tetap bagi setiap sijil. Hanya nama sekolah dan pencapaian yang berbeza.</p>
+    
+    <label class="field" style="margin-bottom:14px;">
+      <span class="lbl">Nama organisasi penganjur</span>
+      <input type="text" id="f_org" value="Pejabat Pendidikan Daerah Kluang">
+    </label>
+    
+    <label class="field" style="margin-bottom:14px;">
+      <span class="lbl">Sesi akademik</span>
+      <input type="text" id="f_sesi" value="SESI AKADEMIK TAHUN 2025">
+    </label>
+    
+    <p class="hint" style="margin-top:18px;margin-bottom:10px;"><strong>Penandatangan</strong></p>
+    <div class="grid3">
+      <label class="field"><span class="lbl">Nama penandatangan</span><input type="text" id="f_signName" value="Tuan Haji Ayub bin Ibrahim"></label>
+      <label class="field"><span class="lbl">Jawatan</span><input type="text" id="f_signRole" value="Pegawai Pendidikan Daerah"></label>
+      <label class="field"><span class="lbl">Organisasi penandatangan</span><input type="text" id="f_signOrg" value="Pejabat Pendidikan Daerah Kluang"></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">2</span> Data penerima</h2>
+    <p class="hint">Muat naik fail Excel (2 lajur: NAMA SEKOLAH, PENCAPAIAN) atau tambah manual. Nama sekolah dan pencapaian boleh lebih dari satu baris.</p>
+    <div class="dropzone" id="dropzone"><strong>Klik untuk pilih fail Excel</strong> atau seret & lepaskan di sini<input type="file" id="fileInput" accept=".xlsx,.xls,.csv"></div>
+    <div style="margin-top:22px;">
+      <div class="toolbar">
+        <strong style="font-size:14px;">Senarai penerima</strong>
+        <button class="tiny subtle" id="addManualRow">+ Tambah baris manual</button>
+        <span class="count-badge" id="recipCount">0 penerima · 0 dipilih</span>
+      </div>
+      <div class="scrollx" style="border:1px solid var(--line);border-radius:10px;">
+        <table class="datatbl recip-table" id="recipTbl">
+          <thead><tr><th class="chk"><input type="checkbox" id="chkAll"></th><th style="width:34px;">#</th><th>Nama Sekolah</th><th>Pencapaian</th><th class="actions"></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">3</span> Pratonton &amp; jana sijil</h2>
+    <p class="hint">Pratonton memaparkan penerima yang dipilih. Muat turun atau cetak akan menggunakan semua penerima yang <strong>ditanda</strong>.</p>
+    <div class="preview-shell">
+      <div class="preview-controls">
+        <label class="field"><span class="lbl">Pratonton untuk</span><select id="previewPicker"></select></label>
+        <div style="display:flex;gap:8px;">
+          <button class="ghost" id="prevRecip" style="flex:1;">◀ Sebelum</button>
+          <button class="ghost" id="nextRecip" style="flex:1;">Seterus ▶</button>
+        </div>
+        <div style="margin-top:6px;"><button class="primary" id="genZip" style="width:100%;">Jana &amp; Muat Turun Semua (ZIP, PDF berasingan)</button></div>
+        <div><button class="ghost" id="genOnePdf" style="width:100%;">Muat Turun 1 PDF (semua muka surat)</button></div>
+        <div style="border-top:1px solid var(--line);margin-top:8px;padding-top:14px;">
+          <p class="hint" style="margin:0 0 10px;"><strong>Cetak terus</strong></p>
+          <button class="subtle" id="printAll" style="width:100%;margin-bottom:8px;">🖨️ Cetak Semua Penerima</button>
+          <button class="subtle" id="printChecked" style="width:100%;margin-bottom:8px;">🖨️ Cetak Yang Ditanda Sahaja</button>
+          <button class="ghost" id="printOne" style="width:100%;">🖨️ Cetak Sijil Ini Sahaja</button>
+        </div>
+      </div>
+      <div class="preview-stage">
+        <div class="stage-frame" id="stageFrame">
+          <div class="cert-scale-wrap" id="certScaleWrap">
+            <div class="cert" id="certLive">
+              
+              <div class="spacer-top"></div>
+              
+              <!-- Tajuk -->
+              <div class="title">Sijil Pencapaian</div>
+              
+              <!-- Ayat pengenalan -->
+              <div class="line-cal"><span id="c_org">Pejabat Pendidikan Daerah Kluang</span> dengan penuh takzim merakamkan</div>
+              <div class="line-cal">setinggi-tinggi penghargaan dan tahniah kepada</div>
+              
+              <!-- Nama sekolah -->
+              <div class="name" id="c_name">SMK BANDAR T6<br>(KERJA PAIP DOMESTIK)</div>
+              
+              <!-- Ayat penghubung -->
+              <div class="line-cal">atas pencapaian cemerlang</div>
+              
+              <!-- Pencapaian -->
+              <div class="achievement" id="c_achievement">GRED PURATA MATA PELAJARAN MPV TERBAIK<br>(GPMP: 0.87)<br>ANUGERAH TVET – MPV</div>
+              
+              <!-- Perkataan "bagi" -->
+              <div class="line-cal">bagi</div>
+              
+              <!-- Sesi akademik -->
+              <div class="session" id="c_sesi">SESI AKADEMIK TAHUN 2025</div>
+              
+              <div class="spacer"></div>
+              
+              <!-- Tandatangan di tengah -->
+              <div class="sign-center">
+                <div class="sig-space"></div>
+                <div class="sig-name" id="c_signName">(TUAN HAJI AYUB BIN IBRAHIM)</div>
+                <div id="c_signRole">Pegawai Pendidikan Daerah</div>
+                <div id="c_signOrg">Pejabat Pendidikan Daerah Kluang</div>
+                <div class="sig-bottom-space"></div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="note" style="text-align:center; color:var(--ink-soft); font-size:12.5px; margin-top:30px; line-height:1.6;">
+    Semua pemprosesan berlaku terus dalam pelayar anda. Fail Excel dan data penerima tidak dimuat naik ke pelayan.
+  </footer>
+</div>
+
+<div id="printArea"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var recipients = [], uid = 1, rawRows = [], headerRowIdx = null;
+  var els = {};
+  ["f_org","f_sesi","f_signName","f_signRole","f_signOrg"].forEach(function(id){ els[id] = document.getElementById(id); });
+
+  function toast(msg){ var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._h); toast._h = setTimeout(function(){ t.classList.remove('show'); }, 2400); }
+  function fixedFields(){ return { org: els.f_org.value.trim() || "—", sesi: els.f_sesi.value.trim() || "—", signName: els.f_signName.value.trim() || "—", signRole: els.f_signRole.value.trim(), signOrg: els.f_signOrg.value.trim() || "—" }; }
+  function formatSignName(n){ n = n.trim(); if(!n) return "—"; if(n[0] === "(") return n; return "(" + n + ")"; }
+
+  function fillCert(container, recipient){
+    var ff = fixedFields();
+    var q = function(sel){ return container.querySelector(sel); };
+    var orgEl = q('#c_org'); if(orgEl) orgEl.textContent = ff.org;
+    var nameEl = q('#c_name'); if(nameEl) nameEl.textContent = (recipient ? recipient.nama : "") || "—";
+    var achievementEl = q('#c_achievement'); if(achievementEl) achievementEl.textContent = (recipient ? recipient.pencapaian : "") || "—";
+    var sesiEl = q('#c_sesi'); if(sesiEl) sesiEl.textContent = ff.sesi;
+    var signNameEl = q('#c_signName'); if(signNameEl) signNameEl.textContent = formatSignName(ff.signName);
+    var signRoleEl = q('#c_signRole'); if(signRoleEl) { signRoleEl.textContent = ff.signRole; signRoleEl.style.display = ff.signRole ? 'block' : 'none'; }
+    var signOrgEl = q('#c_signOrg'); if(signOrgEl) signOrgEl.textContent = ff.signOrg;
+  }
+
+  function refreshLivePreview(){
+    var picker = document.getElementById('previewPicker');
+    var r = null;
+    if(picker.value) { for(var i=0;i<recipients.length;i++){ if(String(recipients[i].id) === picker.value) { r = recipients[i]; break; } } }
+    fillCert(document.getElementById('certLive'), r);
+  }
+  [els.f_org, els.f_sesi, els.f_signName, els.f_signRole, els.f_signOrg].forEach(function(el){ el.addEventListener('input', refreshLivePreview); });
+
+  function rescaleStage(){
+    var frame = document.getElementById('stageFrame');
+    var wrap = document.getElementById('certScaleWrap');
+    wrap.style.transform = 'scale(' + (frame.clientWidth / 794) + ')';
+  }
+  window.addEventListener('resize', rescaleStage);
+
+  function updateRecipCount(){
+    var checked = recipients.filter(function(r){ return r.checked; }).length;
+    document.getElementById('recipCount').textContent = recipients.length + ' penerima · ' + checked + ' dipilih';
+    document.getElementById('chkAll').checked = recipients.length > 0 && checked === recipients.length;
+  }
+
+  function rebuildPreviewPicker(){
+    var picker = document.getElementById('previewPicker');
+    var prevVal = picker.value;
+    picker.innerHTML = '';
+    recipients.forEach(function(r){
+      var o = document.createElement('option');
+      o.value = r.id;
+      o.textContent = (r.nama || '(tiada nama)').replace(/\r?\n/g, ' – ') + (r.pencapaian ? ' — ' + r.pencapaian.substring(0,30).replace(/\r?\n/g, ' ') : '');
+      picker.appendChild(o);
+    });
+    if(recipients.length){
+      var stillThere = recipients.some(function(r){ return String(r.id) === prevVal; });
+      picker.value = stillThere ? prevVal : recipients[0].id;
+    }
+    refreshLivePreview();
+  }
+
+  function renderRecipTable(){
+    var tbody = document.querySelector('#recipTbl tbody');
+    tbody.innerHTML = '';
+    recipients.forEach(function(r, idx){
+      var tr = document.createElement('tr');
+      var tdChk = document.createElement('td'); tdChk.className = 'chk';
+      var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!r.checked;
+      cb.addEventListener('change', function(){ r.checked = cb.checked; updateRecipCount(); });
+      tdChk.appendChild(cb);
+      var tdNum = document.createElement('td'); tdNum.textContent = idx + 1;
+      var tdNama = document.createElement('td');
+      var inpNama = document.createElement('textarea'); inpNama.rows = 2; inpNama.value = r.nama; inpNama.style.resize = 'vertical'; inpNama.style.minHeight = '40px';
+      inpNama.addEventListener('input', function(){ r.nama = inpNama.value; rebuildPreviewPicker(); });
+      tdNama.appendChild(inpNama);
+      var tdPencapaian = document.createElement('td');
+      var inpPencapaian = document.createElement('textarea'); inpPencapaian.rows = 3; inpPencapaian.value = r.pencapaian; inpPencapaian.style.resize = 'vertical'; inpPencapaian.style.minHeight = '60px';
+      inpPencapaian.addEventListener('input', function(){ r.pencapaian = inpPencapaian.value; rebuildPreviewPicker(); });
+      tdPencapaian.appendChild(inpPencapaian);
+      var tdAct = document.createElement('td'); tdAct.className = 'actions';
+      var delBtn = document.createElement('button'); delBtn.className = 'icon-del'; delBtn.textContent = '✕';
+      delBtn.addEventListener('click', function(){ recipients = recipients.filter(function(x){ return x.id !== r.id; }); renderRecipTable(); rebuildPreviewPicker(); updateRecipCount(); });
+      tdAct.appendChild(delBtn);
+      tr.appendChild(tdChk); tr.appendChild(tdNum); tr.appendChild(tdNama); tr.appendChild(tdPencapaian); tr.appendChild(tdAct);
+      tbody.appendChild(tr);
+    });
+    updateRecipCount();
+  }
+
+  document.getElementById('chkAll').addEventListener('change', function(e){ recipients.forEach(function(r){ r.checked = e.target.checked; }); renderRecipTable(); });
+  document.getElementById('addManualRow').addEventListener('click', function(){ recipients.push({ id: uid++, nama: '', pencapaian: '', checked: true }); renderRecipTable(); rebuildPreviewPicker(); });
+  document.getElementById('previewPicker').addEventListener('change', refreshLivePreview);
+  document.getElementById('prevRecip').addEventListener('click', function(){ var p = document.getElementById('previewPicker'); if(p.selectedIndex > 0){ p.selectedIndex -= 1; refreshLivePreview(); } });
+  document.getElementById('nextRecip').addEventListener('click', function(){ var p = document.getElementById('previewPicker'); if(p.selectedIndex < p.options.length - 1){ p.selectedIndex += 1; refreshLivePreview(); } });
+
+  var dropzone = document.getElementById('dropzone');
+  var fileInput = document.getElementById('fileInput');
+  dropzone.addEventListener('click', function(){ fileInput.click(); });
+  dropzone.addEventListener('dragover', function(e){ e.preventDefault(); dropzone.style.borderColor='var(--accent)'; dropzone.style.background='var(--accent-soft)'; });
+  dropzone.addEventListener('dragleave', function(){ dropzone.style.borderColor=''; dropzone.style.background=''; });
+  dropzone.addEventListener('drop', function(e){ e.preventDefault(); dropzone.style.borderColor=''; dropzone.style.background=''; if(e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', function(){ if(fileInput.files && fileInput.files[0]) handleFile(fileInput.files[0]); fileInput.value = ''; });
+
+  function handleFile(file){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      try{
+        var wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+        rawRows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, blankrows: false, defval: '' });
+        if(!rawRows.length){ toast('Fail kosong.'); return; }
+        for(var i=0;i<Math.min(rawRows.length, 15);i++){ if(rawRows[i].join(' ').toUpperCase().indexOf('NAMA') !== -1 || rawRows[i].join(' ').toUpperCase().indexOf('SEKOLAH') !== -1) { headerRowIdx = i; break; } }
+        if(headerRowIdx === null) headerRowIdx = 0;
+        var namaIdx = -1, pencapaianIdx = -1;
+        rawRows[headerRowIdx].forEach(function(v, i){
+          var up = String(v).toUpperCase();
+          if(namaIdx === -1 && (up.indexOf('NAMA') !== -1 || up.indexOf('SEKOLAH') !== -1)) namaIdx = i;
+          if(pencapaianIdx === -1 && (up.indexOf('PENCAPAIAN') !== -1 || up.indexOf('PENCAPAI') !== -1 || up.indexOf('ANUGERAH') !== -1)) pencapaianIdx = i;
+        });
+        if(namaIdx === -1) namaIdx = 0;
+        if(pencapaianIdx === -1) pencapaianIdx = 1;
+        var added = 0;
+        for(var i = headerRowIdx + 1; i < rawRows.length; i++){
+          var row = rawRows[i];
+          var nama = row[namaIdx] != null ? String(row[namaIdx]).trim() : '';
+          if(!nama) continue;
+          var pencapaian = row[pencapaianIdx] != null ? String(row[pencapaianIdx]).trim() : '';
+          recipients.push({ id: uid++, nama: nama, pencapaian: pencapaian, checked: true });
+          added++;
+        }
+        renderRecipTable(); rebuildPreviewPicker();
+        toast(added + ' penerima berjaya diimport.');
+      }catch(err){ console.error(err); toast('Gagal membaca fail.'); }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function sanitizeFilename(s){ return (s || 'sijil').replace(/[\\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80); }
+  function getSelectedRecipients(){ return recipients.filter(function(r){ return r.checked && r.nama && r.nama.trim(); }); }
+
+  function buildOffscreenCert(recipient){
+    var host = document.createElement('div');
+    host.style.position = 'fixed'; host.style.left = '-99999px'; host.style.top = '0'; host.style.width = '794px'; host.style.height = '1123px';
+    host.innerHTML = document.getElementById('certLive').outerHTML;
+    document.body.appendChild(host);
+    fillCert(host.firstElementChild, recipient);
+    return { host: host, certEl: host.firstElementChild };
+  }
+
+  document.getElementById('genZip').addEventListener('click', function(){
+    var selected = getSelectedRecipients();
+    if(!selected.length){ toast('Tiada penerima dipilih.'); return; }
+    var btn = this; btn.disabled = true;
+    var zip = new JSZip(); var used = {}; var i = 0;
+    function step(){
+      if(i >= selected.length){
+        zip.generateAsync({ type: 'blob' }).then(function(blob){
+          var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+          a.download = 'Sijil_Pencapaian_TVET.zip';
+          document.body.appendChild(a); a.click(); a.remove();
+          btn.disabled = false; toast('Selesai — ' + selected.length + ' sijil dimuat turun.');
+        });
+        return;
+      }
+      var r = selected[i];
+      var built = buildOffscreenCert(r);
+      document.fonts.ready.then(function(){ return html2canvas(built.certEl, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }); }).then(function(canvas){
+        var pdf = new window.jspdf.jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+        pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 210, 297);
+        var base = sanitizeFilename(r.nama); var name = base; var n = 1;
+        while(used[name]){ n++; name = base + ' (' + n + ')'; }
+        used[name] = true;
+        zip.file('Sijil_TVET_' + name + '.pdf', pdf.output('blob'));
+        document.body.removeChild(built.host);
+        i++; setTimeout(step, 10);
+      }).catch(function(err){ console.error(err); document.body.removeChild(built.host); i++; setTimeout(step, 10); });
+    }
+    step();
+  });
+
+  document.getElementById('genOnePdf').addEventListener('click', function(){
+    var selected = getSelectedRecipients();
+    if(!selected.length){ toast('Tiada penerima dipilih.'); return; }
+    var btn = this; btn.disabled = true;
+    var pdf = new window.jspdf.jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+    var i = 0;
+    function step(){
+      if(i >= selected.length){
+        pdf.save('Sijil_Pencapaian_TVET.pdf');
+        btn.disabled = false; toast('Selesai — 1 PDF dimuat turun.');
+        return;
+      }
+      var r = selected[i];
+      var built = buildOffscreenCert(r);
+      document.fonts.ready.then(function(){ return html2canvas(built.certEl, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }); }).then(function(canvas){
+        if(i > 0) pdf.addPage('a4', 'p');
+        pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 210, 297);
+        document.body.removeChild(built.host);
+        i++; setTimeout(step, 10);
+      }).catch(function(err){ console.error(err); document.body.removeChild(built.host); i++; setTimeout(step, 10); });
+    }
+    step();
+  });
+
+  function buildPrintPages(list){
+    var printArea = document.getElementById('printArea'); printArea.innerHTML = '';
+    list.forEach(function(r){
+      var page = document.createElement('div'); page.className = 'print-page';
+      var certClone = document.getElementById('certLive').cloneNode(true); certClone.removeAttribute('id');
+      fillCert(certClone, r); page.appendChild(certClone); printArea.appendChild(page);
+    });
+  }
+  function doPrint(list){
+    if(!list.length){ toast('Tiada penerima untuk dicetak.'); return; }
+    buildPrintPages(list);
+    document.fonts.ready.then(function(){ setTimeout(function(){ window.print(); }, 60); });
+  }
+  window.addEventListener('afterprint', function(){ document.getElementById('printArea').innerHTML = ''; });
+  document.getElementById('printAll').addEventListener('click', function(){ doPrint(recipients.filter(function(r){ return r.nama && r.nama.trim(); })); });
+  document.getElementById('printChecked').addEventListener('click', function(){ doPrint(getSelectedRecipients()); });
+  document.getElementById('printOne').addEventListener('click', function(){
+    var picker = document.getElementById('previewPicker'); var r = null;
+    if(picker.value) { for(var i=0;i<recipients.length;i++){ if(String(recipients[i].id) === picker.value) { r = recipients[i]; break; } } }
+    if(r) doPrint([r]); else toast('Tiada pratonton dipilih.');
+  });
+
+  recipients.push({ 
+    id: uid++, 
+    nama: 'SMK BANDAR T6\n(KERJA PAIP DOMESTIK)', 
+    pencapaian: 'GRED PURATA MATA PELAJARAN MPV TERBAIK\n(GPMP: 0.87)\nANUGERAH TVET – MPV', 
+    checked: true 
+  });
+  renderRecipTable(); rebuildPreviewPicker(); rescaleStage(); refreshLivePreview();
+  window.addEventListener('load', function(){ setTimeout(rescaleStage, 50); });
+})();
+</script>
+</body>
+</html>
