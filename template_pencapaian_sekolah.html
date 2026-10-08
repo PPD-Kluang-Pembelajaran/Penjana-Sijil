@@ -106,15 +106,15 @@
   
   .cert .spacer{ flex:1; }
   
-  /* Tandatangan di tengah */
-  .cert .sign-center{ 
-    position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%);
+  /* Tandatangan di kanan seperti sijil asal */
+  .cert .sign-right{ 
+    position: absolute; bottom: 90px; right: 30px;
     width: 400px; text-align: center;
     font-family: 'Calibri', sans-serif; font-size: 14pt; line-height: 1.5; color: #000000; 
   }
-  .cert .sign-center .sig-space { height: 45px; }
-  .cert .sign-center .sig-name { font-weight: 700; text-transform: uppercase; }
-  .cert .sign-center .sig-bottom-space { height: 18px; }
+  .cert .sign-right .sig-space { height: 45px; }
+  .cert .sign-right .sig-name { font-weight: 700; text-transform: uppercase; }
+  .cert .sign-right .sig-bottom-space { height: 18px; }
 
   .toast{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--ink); color:var(--paper); padding:10px 18px; border-radius:10px; font-size:13.5px; box-shadow:0 8px 24px rgba(0,0,0,.25); opacity:0; pointer-events:none; transition:opacity .2s ease, bottom .2s ease; z-index:50; }
   .toast.show{ opacity:1; bottom:32px; }
@@ -194,9 +194,9 @@
         <div><button class="ghost" id="genOnePdf" style="width:100%;">Muat Turun 1 PDF (semua muka surat)</button></div>
         <div style="border-top:1px solid var(--line);margin-top:8px;padding-top:14px;">
           <p class="hint" style="margin:0 0 10px;"><strong>Cetak terus</strong></p>
-          <button class="subtle" id="printAll" style="width:100%;margin-bottom:8px;">🖨️ Cetak Semua Penerima</button>
+          <button class="subtle" id="printAll" style="width:100%;margin-bottom:8px;">️ Cetak Semua Penerima</button>
           <button class="subtle" id="printChecked" style="width:100%;margin-bottom:8px;">🖨️ Cetak Yang Ditanda Sahaja</button>
-          <button class="ghost" id="printOne" style="width:100%;">️ Cetak Sijil Ini Sahaja</button>
+          <button class="ghost" id="printOne" style="width:100%;">🖨️ Cetak Sijil Ini Sahaja</button>
         </div>
       </div>
       <div class="preview-stage">
@@ -223,8 +223,8 @@
               
               <div class="spacer"></div>
               
-              <!-- Tandatangan di tengah -->
-              <div class="sign-center">
+              <!-- Tandatangan di kanan -->
+              <div class="sign-right">
                 <div class="sig-space"></div>
                 <div class="sig-name" id="c_signName">(HAJI AYUB BIN IBRAHIM)</div>
                 <div id="c_signRole">Pegawai Pendidikan Daerah</div>
