@@ -108,7 +108,10 @@
       <h1>Penjana Sijil <span style="font-size:14px; color:var(--ink-soft); font-weight:400;">— Template Asal</span></h1>
       <p>Isi maklumat sijil, tambah penerima, dan jana sijil secara pukal.</p>
     </div>
-    <a class="back-link" href="index.html">← Kembali ke senarai template</a>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button class="tiny icon-del" onclick="clearData()" title="Kosongkan semua data dan mula semula">🗑️ Reset Data</button>
+      <a class="back-link" href="index.html">← Kembali</a>
+    </div>
   </header>
 
   <section class="card">
@@ -134,7 +137,7 @@ Kluang</textarea></label>
 
   <section class="card">
     <h2><span class="num">2</span> Data penerima</h2>
-    <p class="hint">Muat naik fail Excel (2 lajur: NAMA, JAWATAN) atau tambah manual.</p>
+    <p class="hint">Muat naik fail Excel (2 lajur: NAMA, JAWATAN) atau tambah manual. <strong>Biarkan nama kosong jika mahu sijil blank untuk ditulis tangan.</strong></p>
     <div class="dropzone" id="dropzone"><strong>Klik untuk pilih fail Excel</strong> atau seret & lepaskan di sini<input type="file" id="fileInput" accept=".xlsx,.xls,.csv"></div>
     <div style="margin-top:22px;">
       <div class="toolbar">
@@ -144,7 +147,7 @@ Kluang</textarea></label>
       </div>
       <div class="scrollx" style="border:1px solid var(--line);border-radius:10px;">
         <table class="datatbl recip-table" id="recipTbl">
-          <thead><tr><th class="chk"><input type="checkbox" id="chkAll"></th><th style="width:34px;">#</th><th>Nama</th><th>Jawatan</th><th class="actions"></th></tr></thead>
+          <thead><tr><th class="chk"><input type="checkbox" id="chkAll"></th><th style="width:34px;">#</th><th>Nama (Kosong = Sijil Blank)</th><th>Jawatan</th><th class="actions"></th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -229,8 +232,12 @@ Kluang</textarea></label>
     var ff = fixedFields();
     var q = function(sel){ return container.querySelector(sel); };
     q('#c_org') && (q('#c_org').textContent = ff.org);
-    var nameEl = q('#c_name'); if(nameEl) nameEl.textContent = (recipient ? recipient.nama : "") || "—";
-    var roleEl = q('#c_role'); if(roleEl) roleEl.textContent = (recipient ? recipient.jawatan : "") || "—";
+    
+    // UBAHAN 1: Jika nama kosong, biarkan benar-benar kosong (tiada "—")
+    var nameEl = q('#c_name'); 
+    if(nameEl) nameEl.textContent = (recipient && recipient.nama) ? recipient.nama : "";
+    
+    var roleEl = q('#c_role'); if(roleEl) roleEl.textContent = (recipient && recipient.jawatan) ? recipient.jawatan : "";
     var progEl = q('#c_program'); if(progEl) progEl.textContent = ff.program;
     var tarikhEl = q('#c_tarikh'); if(tarikhEl) tarikhEl.textContent = ff.tarikh;
     var tempatEl = q('#c_tempat'); if(tempatEl) tempatEl.textContent = ff.tempat;
@@ -267,7 +274,9 @@ Kluang</textarea></label>
     recipients.forEach(function(r){
       var o = document.createElement('option');
       o.value = r.id;
-      o.textContent = (r.nama || '(tiada nama)').replace(/\r?\n/g, ' – ') + (r.jawatan ? ' — ' + r.jawatan : '');
+      // UBAHAN 2: Tunjuk label "(Sijil Blank)" jika nama kosong
+      var displayName = r.nama ? r.nama : '(Sijil Blank - Tulis Tangan)';
+      o.textContent = displayName.replace(/\r?\n/g, ' – ') + (r.jawatan ? ' — ' + r.jawatan : '');
       picker.appendChild(o);
     });
     if(recipients.length){
@@ -289,10 +298,12 @@ Kluang</textarea></label>
       var tdNum = document.createElement('td'); tdNum.textContent = idx + 1;
       var tdNama = document.createElement('td');
       var inpNama = document.createElement('textarea'); inpNama.rows = 1; inpNama.value = r.nama; inpNama.style.resize = 'vertical'; inpNama.style.minHeight = '30px';
+      inpNama.placeholder = 'Biarkan kosong untuk sijil blank';
       inpNama.addEventListener('input', function(){ r.nama = inpNama.value; rebuildPreviewPicker(); });
       tdNama.appendChild(inpNama);
       var tdJawatan = document.createElement('td');
       var inpJawatan = document.createElement('input'); inpJawatan.type = 'text'; inpJawatan.value = r.jawatan;
+      inpJawatan.placeholder = 'cth: FASILITATOR';
       inpJawatan.addEventListener('input', function(){ r.jawatan = inpJawatan.value; rebuildPreviewPicker(); });
       tdJawatan.appendChild(inpJawatan);
       var tdAct = document.createElement('td'); tdAct.className = 'actions';
@@ -339,20 +350,24 @@ Kluang</textarea></label>
         for(var i = headerRowIdx + 1; i < rawRows.length; i++){
           var row = rawRows[i];
           var nama = row[namaIdx] != null ? String(row[namaIdx]).trim() : '';
-          if(!nama) continue;
+          // UBAHAN 3: Benarkan import walaupun nama kosong (untuk sijil blank)
           var jawatan = jawatanIdx !== -1 && row[jawatanIdx] != null ? String(row[jawatanIdx]).trim() : '';
           recipients.push({ id: uid++, nama: nama, jawatan: jawatan, checked: true });
           added++;
         }
         renderRecipTable(); rebuildPreviewPicker();
-        toast(added + ' penerima berjaya diimport.');
+        toast(added + ' baris berjaya diimport.');
       }catch(err){ console.error(err); toast('Gagal membaca fail.'); }
     };
     reader.readAsArrayBuffer(file);
   }
 
-  function sanitizeFilename(s){ return (s || 'sijil').replace(/[\\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80); }
-  function getSelectedRecipients(){ return recipients.filter(function(r){ return r.checked && r.nama && r.nama.trim(); }); }
+  function sanitizeFilename(s){ return (s || 'sijil_blank').replace(/[\\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80); }
+  
+  // UBAHAN 4: Benarkan penerima dengan nama kosong untuk diproses asalkan ia ditanda (checked)
+  function getSelectedRecipients(){ 
+    return recipients.filter(function(r){ return r.checked; }); 
+  }
 
   function buildOffscreenCert(recipient){
     var host = document.createElement('div');
@@ -383,10 +398,11 @@ Kluang</textarea></label>
       document.fonts.ready.then(function(){ return html2canvas(built.certEl, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }); }).then(function(canvas){
         var pdf = new window.jspdf.jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
         pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 210, 297);
-        var base = sanitizeFilename(r.nama); var name = base; var n = 1;
+        var base = r.nama ? sanitizeFilename(r.nama) : 'Sijil_Blank_' + (i+1);
+        var name = base; var n = 1;
         while(used[name]){ n++; name = base + ' (' + n + ')'; }
         used[name] = true;
-        zip.file('Sijil_' + name + '.pdf', pdf.output('blob'));
+        zip.file(name + '.pdf', pdf.output('blob'));
         document.body.removeChild(built.host);
         i++; setTimeout(step, 10);
       }).catch(function(err){ console.error(err); document.body.removeChild(built.host); i++; setTimeout(step, 10); });
@@ -440,9 +456,59 @@ Kluang</textarea></label>
     if(r) doPrint([r]); else toast('Tiada pratonton dipilih.');
   });
 
-  recipients.push({ id: uid++, nama: 'Noor Syamsila binti Yahya', jawatan: 'Jurulatih Utama', checked: true });
-  renderRecipTable(); rebuildPreviewPicker(); rescaleStage(); refreshLivePreview();
-  window.addEventListener('load', function(){ setTimeout(rescaleStage, 50); });
+  // Fungsi untuk reset data
+  window.clearData = function(){
+    if(confirm("Adakah anda pasti mahu memadam semua data yang telah diisi? Tindakan ini tidak boleh diundur.")) {
+      localStorage.removeItem('penjanaSijilData');
+      location.reload();
+    }
+  };
+
+  // --- FUNGSI AUTO-SAVE & AUTO-LOAD ---
+  function saveData() {
+    const state = { recipients: recipients, uid: uid };
+    document.querySelectorAll('input[id^="f_"], textarea[id^="f_"]').forEach(el => { state[el.id] = el.value; });
+    localStorage.setItem('penjanaSijilData', JSON.stringify(state));
+  }
+
+  function loadData() {
+    const savedData = localStorage.getItem('penjanaSijilData');
+    if (savedData) {
+      const state = JSON.parse(savedData);
+      if (state.recipients && state.recipients.length > 0) {
+        recipients = state.recipients;
+        uid = state.uid || 1;
+        renderRecipTable();
+        rebuildPreviewPicker();
+      }
+      for (const [key, value] of Object.entries(state)) {
+        if (key !== 'recipients' && key !== 'uid') {
+          const el = document.getElementById(key);
+          if (el) { el.value = value; el.dispatchEvent(new Event('input')); }
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
+  function init() {
+    const hasData = loadData();
+    if (!hasData) {
+      recipients.push({ id: uid++, nama: 'Noor Syamsila binti Yahya', jawatan: 'Jurulatih Utama', checked: true });
+      renderRecipTable();
+      rebuildPreviewPicker();
+    }
+    
+    // Auto-save setiap kali ada perubahan
+    document.querySelectorAll('input, textarea').forEach(el => { el.addEventListener('input', saveData); });
+    
+    rescaleStage();
+    refreshLivePreview();
+    window.addEventListener('load', function(){ setTimeout(rescaleStage, 50); });
+  }
+  
+  init();
 })();
 </script>
 </body>
