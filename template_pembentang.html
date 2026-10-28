@@ -6,7 +6,7 @@
 <title>Penjana Sijil - Sijil Pembentang</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;700&family=Libre+Franklin:wght@400;700;800&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;700&family=Libre+Franklin:wght@400;700;800&family=Tangerine:wght@400;700&family=Carlito:ital,wght@0,400;0,700;1,400;1,700&family=Archivo+Narrow:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -68,66 +68,38 @@
   .preview-stage{ flex:2 1 420px; display:flex; justify-content:center; }
   .stage-frame{ width:100%; max-width:460px; aspect-ratio:210/297; position:relative; overflow:hidden; border-radius:6px; box-shadow:0 10px 34px rgba(0,0,0,.18); }
   .cert-scale-wrap{ position:absolute; top:0; left:0; width:794px; height:1123px; transform-origin:top left; }
-  .cert{ width:794px; height:1123px; background:#ffffff; color:#000000; position:relative; padding:96px 96px 56px; font-family:'Libre Franklin',sans-serif; text-align:center; display:flex; flex-direction:column; }
-  
-  /* Spacer atas */
-  .cert .spacer-top{ height:180px; }
-  
-  /* Tajuk: Edwardian Script ITC, 72pt, merah */
-  .cert .title{ 
-    font-family:'Edwardian Script ITC','Tangerine',cursive; 
-    font-weight:400; font-size:72pt; color:#FF0000; margin:0; line-height:1; white-space:nowrap; 
-  }
-  
-  /* Ayat Calibri italic 14pt */
-  .cert .line-cal{ 
-    font-family:'Calibri',sans-serif; 
-    font-style:italic; font-weight:400; font-size:14pt; color:#000000; line-height:1.5; 
-    text-align:center;
-  }
-  
-  /* Nama penerima: Libre Franklin 18pt, bold, uppercase */
-  .cert .name{ 
-    font-family:'Libre Franklin',sans-serif; 
-    font-weight:700; font-size:18pt; text-transform:uppercase; margin:14px 0 14px; line-height:1.3; white-space:pre-line; word-break:break-word; 
-  }
-  
-  /* Jawatan: Libre Franklin 18pt, bold, uppercase */
-  .cert .role{ 
-    font-family:'Libre Franklin',sans-serif; 
-    font-weight:800; font-size:18pt; text-transform:uppercase; margin:14px 0 0; 
-  }
-  
-  /* Program: Libre Franklin 14pt, bold, uppercase */
-  .cert .program{ 
-    font-family:'Libre Franklin',sans-serif; 
-    font-weight:700; font-size:14pt; text-transform:uppercase; line-height:1.4; margin:0 0 22px; padding:0 6px; 
-  }
-  
-  /* Tarikh/Tempat label: Arial Narrow italic 14pt */
-  .cert .line-an{ 
-    font-family:'Arial Narrow',sans-serif; 
-    font-style:italic; font-weight:400; font-size:14pt; color:#000000; line-height:1.2; 
-  }
-  
-  /* Tarikh/Tempat value: Libre Franklin 14pt, bold, uppercase */
-  .cert .datevenue .val{ 
-    font-family:'Libre Franklin',sans-serif; 
-    font-weight:700; font-size:14pt; text-transform:uppercase; margin:2px 0; line-height:1.2; 
-  }
-  
-  .cert .spacer{ flex:1; }
-  
-  /* Tandatangan di kanan seperti sijil asal */
-  .cert .sign-right{ 
-    position: absolute; bottom: 90px; right: 30px;
-    width: 400px; text-align: center;
-    font-family: 'Calibri', sans-serif; font-size: 14pt; line-height: 1.5; color: #000000; 
-  }
-  .cert .sign-right .sig-space { height: 45px; }
-  .cert .sign-right .sig-name { font-weight: 700; text-transform: uppercase; }
-  .cert .sign-right .sig-bottom-space { height: 18px; }
-
+  /* ===== SIJIL: disusun ikut templat Word asal (A4, margin 72pt = 96px) =====
+     Setiap div = satu perenggan Word. Line-height = jarak "single" Word untuk font itu. */
+  .cert{ width:794px; height:1123px; background:#ffffff; color:#000000; position:relative; overflow:hidden; padding:96px 96px 0; text-align:center; font-family:'Calibri','Carlito',sans-serif; }
+  .cert > div{ margin:0; }
+  .cert .eb55{ font-family:'EB Garamond',serif; font-size:55pt; line-height:96px; height:96px; }
+  .cert .eb38{ font-family:'EB Garamond',serif; font-size:38pt; line-height:66px; height:66px; }
+  .cert .eb28{ font-family:'EB Garamond',serif; font-size:28pt; line-height:49px; height:49px; }
+  .cert .eb24{ font-family:'EB Garamond',serif; font-size:24pt; line-height:42px; height:42px; }
+  .cert .eb14{ font-family:'EB Garamond',serif; font-size:14pt; line-height:24px; height:24px; }
+  .cert .bag12{ font-size:12pt; line-height:20px; height:20px; }
+  .cert .title{ font-family:'Edwardian Script ITC','Tangerine',cursive; font-weight:700; font-size:72pt; color:#FF0000; line-height:95px; height:95px; white-space:nowrap; }
+  .cert .cal11i{ font-family:'Calibri','Carlito',sans-serif; font-style:italic; font-size:11pt; line-height:18px; min-height:18px; }
+  .cert .cal14{ font-family:'Calibri','Carlito',sans-serif; font-size:14pt; line-height:23px; min-height:23px; }
+  .cert .cal14i{ font-family:'Calibri','Carlito',sans-serif; font-style:italic; font-size:14pt; line-height:23px; min-height:23px; }
+  .cert .cal18i{ font-family:'Calibri','Carlito',sans-serif; font-style:italic; font-size:18pt; line-height:29px; min-height:29px; }
+  .cert .lf8{ font-family:'Libre Franklin',sans-serif; font-size:8pt; line-height:13px; height:13px; }
+  .cert .lf10{ font-family:'Libre Franklin',sans-serif; font-size:10pt; line-height:16px; height:16px; }
+  .cert .lf12b{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:12pt; line-height:19px; min-height:19px; }
+  .cert .lf14b{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:14pt; line-height:23px; min-height:23px; }
+  .cert .lf14x{ font-family:'Libre Franklin',sans-serif; font-weight:800; font-size:14pt; line-height:23px; min-height:23px; }
+  .cert .lf16{ font-family:'Libre Franklin',sans-serif; font-size:16pt; line-height:26px; min-height:26px; }
+  .cert .lf18b{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:18pt; line-height:29px; min-height:29px; }
+  .cert .lf18x{ font-family:'Libre Franklin',sans-serif; font-weight:800; font-size:18pt; line-height:29px; min-height:29px; }
+  .cert .lf20b{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:20pt; line-height:32px; min-height:32px; }
+  .cert .an14b{ font-family:'Arial Narrow','Archivo Narrow',sans-serif; font-weight:700; font-size:14pt; line-height:21px; min-height:21px; }
+  .cert .up{ text-transform:uppercase; }
+  .cert .pl{ white-space:pre-line; word-break:break-word; }
+  .cert .sa12{ margin-bottom:16px !important; }
+  .cert .ls115{ line-height:1.15 !important; }
+  /* Tandatangan: blok berpusat, kedudukan mendatar ikut templat Word */
+  .cert .sign{ width:400px; text-align:center; font-family:'Calibri','Carlito',sans-serif; font-size:14pt; line-height:23px; color:#000000; }
+  .cert .sign .sig-name{ font-weight:700; text-transform:uppercase; line-height:26px; }
   .toast{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--ink); color:var(--paper); padding:10px 18px; border-radius:10px; font-size:13.5px; box-shadow:0 8px 24px rgba(0,0,0,.25); opacity:0; pointer-events:none; transition:opacity .2s ease, bottom .2s ease; z-index:50; }
   .toast.show{ opacity:1; bottom:32px; }
   #printArea{ display:none; }
@@ -161,7 +133,7 @@
     </label>
     
     <label class="field" style="margin-bottom:14px;">
-      <span class="lbl">Tajuk / nama program</span>
+      <span class="lbl">Tajuk / nama program <span style="font-weight:400;">(guna *teks* untuk italik, cth: Bengkel *Smart Write*)</span></span>
       <textarea id="f_program" rows="3">PERKONGSIAN STRATEGI DAN AMALAN MENINGKATKAN GRED PURATA DAN % LULUS PRINSIP PERAKAUNAN SPM 2026</textarea>
     </label>
     
@@ -226,47 +198,36 @@
         <div class="stage-frame" id="stageFrame">
           <div class="cert-scale-wrap" id="certScaleWrap">
             <div class="cert" id="certLive">
-              
-              <div class="spacer-top"></div>
-              
-              <!-- Tajuk -->
+              <div class="eb55">&nbsp;</div>
+              <div class="eb38">&nbsp;</div>
               <div class="title">Sijil Penghargaan</div>
-              
-              <!-- Ayat pertama -->
-              <div class="line-cal">Dengan sukacitanya <span id="c_org">Pejabat Pendidikan Daerah Kluang</span></div>
-              <div class="line-cal">merakamkan setinggi-tinggi penghargaan dan terima kasih kepada</div>
-              
-              <!-- Nama penerima -->
-              <div class="name" id="c_name">NOR ANIS BINTI ROSZI</div>
-              
-              <!-- Ayat kedua -->
-              <div class="line-cal">atas sumbangan khidmat bakti yang cemerlang sebagai</div>
-              
-              <!-- Jawatan -->
-              <div class="role" id="c_role">PEMBENTANG</div>
-              
-              <!-- Program -->
-              <div class="program" id="c_program">PERKONGSIAN STRATEGI DAN AMALAN MENINGKATKAN GRED PURATA DAN % LULUS PRINSIP PERAKAUNAN SPM 2026</div>
-              
-              <!-- Tarikh -->
-              <div class="line-an">pada</div>
-              <div class="val" id="c_tarikh">24 SEPTEMBER 2026</div>
-              
-              <!-- Tempat -->
-              <div class="line-an" style="margin-top:14px;">bertempat di</div>
-              <div class="val" id="c_tempat">SMK SIMPANG RENGAM</div>
-              
-              <div class="spacer"></div>
-              
-              <!-- Tandatangan di kanan -->
-              <div class="sign-right">
-                <div class="sig-space"></div>
-                <div class="sig-name" id="c_signName">(HAJI AYUB BIN IBRAHIM)</div>
-                <div id="c_signRole">Pegawai Pendidikan Daerah</div>
-                <div id="c_signOrg">Pejabat Pendidikan Daerah Kluang</div>
-                <div class="sig-bottom-space"></div>
+              <div class="bag12">&nbsp;</div>
+              <div class="cal14i">Dengan sukacitanya <span id="c_org">Pejabat Pendidikan Daerah Kluang</span></div>
+              <div class="cal14i">merakamkan setinggi-tinggi penghargaan dan terima kasih kepada</div>
+              <div class="cal14i">&nbsp;</div>
+              <div class="lf18b up pl" id="c_name">NOR ANIS BINTI ROSZI</div>
+              <div class="lf14b">&nbsp;</div>
+              <div class="cal14i sa12">atas sumbangan khidmat bakti yang cemerlang sebagai</div>
+              <div class="lf18x up pl" id="c_role">PEMBENTANG</div>
+              <div class="an14b up pl" id="c_program">PERKONGSIAN STRATEGI DAN AMALAN MENINGKATKAN GRED PURATA DAN % LULUS PRINSIP PERAKAUNAN SPM 2026</div>
+              <div class="an14b">&nbsp;</div>
+              <div class="cal14i">pada</div>
+              <div class="lf14b up pl" id="c_tarikh">24 SEPTEMBER 2026</div>
+              <div class="lf14b">&nbsp;</div>
+              <div class="cal14i">bertempat di</div>
+              <div class="lf14b up pl" id="c_tempat">SMK SIMPANG RENGAM</div>
+              <div class="lf14b">&nbsp;</div>
+              <div class="lf14b">&nbsp;</div>
+              <div class="lf16">&nbsp;</div>
+              <div class="lf14b">&nbsp;</div>
+              <div class="cal14">&nbsp;</div>
+              <div class="cal14">&nbsp;</div>
+              <div class="cal14">&nbsp;</div>
+              <div class="cal14">&nbsp;</div>
+              <div class="sign" style="margin-left:255px;"><div class="sig-name" id="c_signName">(HAJI AYUB BIN IBRAHIM)</div>
+              <div id="c_signRole">Pegawai Pendidikan Daerah</div>
+              <div id="c_signOrg">Pejabat Pendidikan Daerah Kluang</div>
               </div>
-              
             </div>
           </div>
         </div>
@@ -291,6 +252,8 @@
 
   function toast(msg){ var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._h); toast._h = setTimeout(function(){ t.classList.remove('show'); }, 2400); }
   function fixedFields(){ return { org: els.f_org.value.trim() || "—", program: els.f_program.value.trim() || "—", tarikh: els.f_tarikh.value.trim() || "—", tempat: els.f_tempat.value.trim() || "—", signName: els.f_signName.value.trim() || "—", signRole: els.f_signRole.value.trim(), signOrg: els.f_signOrg.value.trim() || "—" }; }
+  // Teks kaya: *teks* = italik, baris baharu dikekalkan
+  function richText(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }).replace(/\*([^*\n]+)\*/g, '<i>$1</i>'); }
   function formatSignName(n){ n = n.trim(); if(!n) return "—"; if(n[0] === "(") return n; return "(" + n + ")"; }
 
   function fillCert(container, recipient){
@@ -299,7 +262,7 @@
     var orgEl = q('#c_org'); if(orgEl) orgEl.textContent = ff.org;
     var nameEl = q('#c_name'); if(nameEl) nameEl.textContent = (recipient ? recipient.nama : "") || "—";
     var roleEl = q('#c_role'); if(roleEl) roleEl.textContent = (recipient ? recipient.jawatan : "") || "—";
-    var progEl = q('#c_program'); if(progEl) progEl.textContent = ff.program;
+    var progEl = q('#c_program'); if(progEl) progEl.innerHTML = richText(ff.program);
     var tarikhEl = q('#c_tarikh'); if(tarikhEl) tarikhEl.textContent = ff.tarikh;
     var tempatEl = q('#c_tempat'); if(tempatEl) tempatEl.textContent = ff.tempat;
     var signNameEl = q('#c_signName'); if(signNameEl) signNameEl.textContent = formatSignName(ff.signName);

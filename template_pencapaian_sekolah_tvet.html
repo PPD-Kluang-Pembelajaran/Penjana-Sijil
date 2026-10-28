@@ -6,7 +6,7 @@
 <title>Penjana Sijil - Sijil Pencapaian Sekolah TVET</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;700&family=Libre+Franklin:wght@400;700;800&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;700&family=Libre+Franklin:wght@400;700;800&family=Tangerine:wght@400;700&family=Carlito:ital,wght@0,400;0,700;1,400;1,700&family=Archivo+Narrow:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -68,54 +68,38 @@
   .preview-stage{ flex:2 1 420px; display:flex; justify-content:center; }
   .stage-frame{ width:100%; max-width:460px; aspect-ratio:210/297; position:relative; overflow:hidden; border-radius:6px; box-shadow:0 10px 34px rgba(0,0,0,.18); }
   .cert-scale-wrap{ position:absolute; top:0; left:0; width:794px; height:1123px; transform-origin:top left; }
-  .cert{ width:794px; height:1123px; background:#ffffff; color:#000000; position:relative; padding:96px 96px 56px; font-family:'Libre Franklin',sans-serif; text-align:center; display:flex; flex-direction:column; }
-  
-  /* Spacer atas */
-  .cert .spacer-top{ height:200px; }
-  
-  /* Tajuk: Edwardian Script ITC / Tangerine, 72pt, merah */
-  .cert .title{ 
-    font-family:'Edwardian Script ITC','Tangerine',cursive; 
-    font-weight:400; font-size:72pt; color:#FF0000; margin:0; line-height:1; white-space:nowrap; 
-  }
-  
-  /* Ayat Calibri italic 14pt */
-  .cert .line-cal{ 
-    font-family:'Calibri',sans-serif; 
-    font-style:italic; font-weight:400; font-size:14pt; color:#000000; line-height:1.5; 
-    text-align:center;
-  }
-  
-  /* Nama sekolah: Libre Franklin 18pt, bold, uppercase */
-  .cert .name{ 
-    font-family:'Libre Franklin',sans-serif; 
-    font-weight:800; font-size:18pt; text-transform:uppercase; margin:14px 0 14px; line-height:1.3; white-space:pre-line; word-break:break-word; 
-  }
-  
-  /* Pencapaian: Libre Franklin 18pt, bold, uppercase */
-  .cert .achievement{ 
-    font-family:'Libre Franklin',sans-serif; 
-    font-weight:800; font-size:18pt; text-transform:uppercase; margin:0 0 22px; line-height:1.4; white-space:pre-line; word-break:break-word; 
-  }
-  
-  /* Sesi akademik: Libre Franklin 18pt, bold, uppercase */
-  .cert .session{ 
-    font-family:'Libre Franklin',sans-serif; 
-    font-weight:800; font-size:18pt; text-transform:uppercase; margin:0 0 22px; line-height:1.4; white-space:pre-line; word-break:break-word; 
-  }
-  
-  .cert .spacer{ flex:1; }
-  
-  /* Tandatangan di kanan seperti sijil asal */
-  .cert .sign-right{ 
-    position: absolute; bottom: 90px; right: 30px;
-    width: 400px; text-align: center;
-    font-family: 'Calibri', sans-serif; font-size: 14pt; line-height: 1.5; color: #000000; 
-  }
-  .cert .sign-right .sig-space { height: 45px; }
-  .cert .sign-right .sig-name { font-weight: 700; text-transform: uppercase; }
-  .cert .sign-right .sig-bottom-space { height: 18px; }
-
+  /* ===== SIJIL: disusun ikut templat Word asal (A4, margin 72pt = 96px) =====
+     Setiap div = satu perenggan Word. Line-height = jarak "single" Word untuk font itu. */
+  .cert{ width:794px; height:1123px; background:#ffffff; color:#000000; position:relative; overflow:hidden; padding:96px 96px 0; text-align:center; font-family:'Calibri','Carlito',sans-serif; }
+  .cert > div{ margin:0; }
+  .cert .eb55{ font-family:'EB Garamond',serif; font-size:55pt; line-height:96px; height:96px; }
+  .cert .eb38{ font-family:'EB Garamond',serif; font-size:38pt; line-height:66px; height:66px; }
+  .cert .eb28{ font-family:'EB Garamond',serif; font-size:28pt; line-height:49px; height:49px; }
+  .cert .eb24{ font-family:'EB Garamond',serif; font-size:24pt; line-height:42px; height:42px; }
+  .cert .eb14{ font-family:'EB Garamond',serif; font-size:14pt; line-height:24px; height:24px; }
+  .cert .bag12{ font-size:12pt; line-height:20px; height:20px; }
+  .cert .title{ font-family:'Edwardian Script ITC','Tangerine',cursive; font-weight:700; font-size:72pt; color:#FF0000; line-height:95px; height:95px; white-space:nowrap; }
+  .cert .cal11i{ font-family:'Calibri','Carlito',sans-serif; font-style:italic; font-size:11pt; line-height:18px; min-height:18px; }
+  .cert .cal14{ font-family:'Calibri','Carlito',sans-serif; font-size:14pt; line-height:23px; min-height:23px; }
+  .cert .cal14i{ font-family:'Calibri','Carlito',sans-serif; font-style:italic; font-size:14pt; line-height:23px; min-height:23px; }
+  .cert .cal18i{ font-family:'Calibri','Carlito',sans-serif; font-style:italic; font-size:18pt; line-height:29px; min-height:29px; }
+  .cert .lf8{ font-family:'Libre Franklin',sans-serif; font-size:8pt; line-height:13px; height:13px; }
+  .cert .lf10{ font-family:'Libre Franklin',sans-serif; font-size:10pt; line-height:16px; height:16px; }
+  .cert .lf12b{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:12pt; line-height:19px; min-height:19px; }
+  .cert .lf14b{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:14pt; line-height:23px; min-height:23px; }
+  .cert .lf14x{ font-family:'Libre Franklin',sans-serif; font-weight:800; font-size:14pt; line-height:23px; min-height:23px; }
+  .cert .lf16{ font-family:'Libre Franklin',sans-serif; font-size:16pt; line-height:26px; min-height:26px; }
+  .cert .lf18b{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:18pt; line-height:29px; min-height:29px; }
+  .cert .lf18x{ font-family:'Libre Franklin',sans-serif; font-weight:800; font-size:18pt; line-height:29px; min-height:29px; }
+  .cert .lf20b{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:20pt; line-height:32px; min-height:32px; }
+  .cert .an14b{ font-family:'Arial Narrow','Archivo Narrow',sans-serif; font-weight:700; font-size:14pt; line-height:21px; min-height:21px; }
+  .cert .up{ text-transform:uppercase; }
+  .cert .pl{ white-space:pre-line; word-break:break-word; }
+  .cert .sa12{ margin-bottom:16px !important; }
+  .cert .ls115{ line-height:1.15 !important; }
+  /* Tandatangan: blok berpusat, kedudukan mendatar ikut templat Word */
+  .cert .sign{ width:400px; text-align:center; font-family:'Calibri','Carlito',sans-serif; font-size:14pt; line-height:23px; color:#000000; }
+  .cert .sign .sig-name{ font-weight:700; text-transform:uppercase; line-height:26px; }
   .toast{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--ink); color:var(--paper); padding:10px 18px; border-radius:10px; font-size:13.5px; box-shadow:0 8px 24px rgba(0,0,0,.25); opacity:0; pointer-events:none; transition:opacity .2s ease, bottom .2s ease; z-index:50; }
   .toast.show{ opacity:1; bottom:32px; }
   #printArea{ display:none; }
@@ -203,42 +187,32 @@
         <div class="stage-frame" id="stageFrame">
           <div class="cert-scale-wrap" id="certScaleWrap">
             <div class="cert" id="certLive">
-              
-              <div class="spacer-top"></div>
-              
-              <!-- Tajuk -->
+              <div class="eb55">&nbsp;</div>
+              <div class="eb28">&nbsp;</div>
               <div class="title">Sijil Pencapaian</div>
-              
-              <!-- Ayat pengenalan -->
-              <div class="line-cal"><span id="c_org">Pejabat Pendidikan Daerah Kluang</span> dengan penuh takzim merakamkan</div>
-              <div class="line-cal">setinggi-tinggi penghargaan dan tahniah kepada</div>
-              
-              <!-- Nama sekolah -->
-              <div class="name" id="c_name">SMK BANDAR T6<br>(KERJA PAIP DOMESTIK)</div>
-              
-              <!-- Ayat penghubung -->
-              <div class="line-cal">atas pencapaian cemerlang</div>
-              
-              <!-- Pencapaian -->
-              <div class="achievement" id="c_achievement">GRED PURATA MATA PELAJARAN MPV TERBAIK<br>(GPMP: 0.87)<br>ANUGERAH TVET – MPV</div>
-              
-              <!-- Perkataan "bagi" -->
-              <div class="line-cal">bagi</div>
-              
-              <!-- Sesi akademik -->
-              <div class="session" id="c_sesi">SESI AKADEMIK TAHUN 2025</div>
-              
-              <div class="spacer"></div>
-              
-              <!-- Tandatangan di kanan -->
-              <div class="sign-right">
-                <div class="sig-space"></div>
-                <div class="sig-name" id="c_signName">(TUAN HAJI AYUB BIN IBRAHIM)</div>
-                <div id="c_signRole">Pegawai Pendidikan Daerah</div>
-                <div id="c_signOrg">Pejabat Pendidikan Daerah Kluang</div>
-                <div class="sig-bottom-space"></div>
+              <div class="bag12">&nbsp;</div>
+              <div class="cal14i ls115"><span id="c_org">Pejabat Pendidikan Daerah Kluang</span> dengan penuh takzim merakamkan</div>
+              <div class="cal14i ls115 sa12">setinggi-tinggi penghargaan dan tahniah kepada</div>
+              <div class="lf18b up pl" id="c_name">SMK BANDAR T6<br>(KERJA PAIP DOMESTIK)</div>
+              <div class="lf14b">&nbsp;</div>
+              <div class="cal14i sa12">atas pencapaian cemerlang</div>
+              <div class="lf18b up pl" id="c_achievement">GRED PURATA MATA PELAJARAN MPV TERBAIK (GPMP: 0.87)<br>ANUGERAH TVET – MPV</div>
+              <div class="lf18b">&nbsp;</div>
+              <div class="cal14i sa12">bagi</div>
+              <div class="lf18b up pl" id="c_sesi">SESI AKADEMIK TAHUN 2025</div>
+              <div class="lf18b">&nbsp;</div>
+              <div class="lf14b">&nbsp;</div>
+              <div class="lf14b">&nbsp;</div>
+              <div class="lf16">&nbsp;</div>
+              <div class="cal14">&nbsp;</div>
+              <div class="cal14">&nbsp;</div>
+              <div class="lf14b">&nbsp;</div>
+              <div class="cal14">&nbsp;</div>
+              <div class="cal14">&nbsp;</div>
+              <div class="sign" style="margin-left:185px;"><div class="sig-name" id="c_signName">(HAJI AYUB BIN IBRAHIM)</div>
+              <div id="c_signRole">Pegawai Pendidikan Daerah</div>
+              <div id="c_signOrg">Pejabat Pendidikan Daerah Kluang</div>
               </div>
-              
             </div>
           </div>
         </div>
@@ -263,6 +237,8 @@
 
   function toast(msg){ var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._h); toast._h = setTimeout(function(){ t.classList.remove('show'); }, 2400); }
   function fixedFields(){ return { org: els.f_org.value.trim() || "—", sesi: els.f_sesi.value.trim() || "—", signName: els.f_signName.value.trim() || "—", signRole: els.f_signRole.value.trim(), signOrg: els.f_signOrg.value.trim() || "—" }; }
+  // Teks kaya: *teks* = italik, baris baharu dikekalkan
+  function richText(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }).replace(/\*([^*\n]+)\*/g, '<i>$1</i>'); }
   function formatSignName(n){ n = n.trim(); if(!n) return "—"; if(n[0] === "(") return n; return "(" + n + ")"; }
 
   function fillCert(container, recipient){
@@ -482,7 +458,7 @@
   recipients.push({ 
     id: uid++, 
     nama: 'SMK BANDAR T6\n(KERJA PAIP DOMESTIK)', 
-    pencapaian: 'GRED PURATA MATA PELAJARAN MPV TERBAIK\n(GPMP: 0.87)\nANUGERAH TVET – MPV', 
+    pencapaian: 'GRED PURATA MATA PELAJARAN MPV TERBAIK (GPMP: 0.87)\nANUGERAH TVET – MPV', 
     checked: true 
   });
   renderRecipTable(); rebuildPreviewPicker(); rescaleStage(); refreshLivePreview();

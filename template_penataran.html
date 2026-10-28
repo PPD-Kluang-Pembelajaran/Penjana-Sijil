@@ -6,7 +6,7 @@
 <title>Penjana Sijil - Penataran Jurulatih Utama</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;700&family=Libre+Franklin:wght@400;700;800&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:wght@400;700&family=Libre+Franklin:wght@400;700;800&family=Tangerine:wght@400;700&family=Carlito:ital,wght@0,400;0,700;1,400;1,700&family=Archivo+Narrow:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -68,41 +68,38 @@
   .preview-stage{ flex:2 1 420px; display:flex; justify-content:center; }
   .stage-frame{ width:100%; max-width:460px; aspect-ratio:210/297; position:relative; overflow:hidden; border-radius:6px; box-shadow:0 10px 34px rgba(0,0,0,.18); }
   .cert-scale-wrap{ position:absolute; top:0; left:0; width:794px; height:1123px; transform-origin:top left; }
-  .cert{ width:794px; height:1123px; background:#ffffff; color:#000000; position:relative; padding:96px 96px 56px; font-family:'Libre Franklin',sans-serif; text-align:center; display:flex; flex-direction:column; }
-  
-  /* DIKEMBALIKAN KEPADA SAIZ ASAL SUPAYA KEDUDUKAN TEGAK SAMA SEPERTI SIJIL ASAL */
-  .cert .spacer-55{ font-size:55pt; line-height:1.15; }
-  .cert .spacer-38{ font-size:38pt; line-height:1.15; }
-  
-  /* Tajuk utama: font asal (Edwardian Script ITC, 72pt) */
-  .cert .title{ 
-    font-family:'Edwardian Script ITC','Tangerine',cursive; 
-    font-weight:700; font-size:72pt; color:#FF0000; margin:0; line-height:1; white-space:nowrap; 
-  }
-  
-  /* Subtajuk: Arial Narrow 14pt seperti diminta */
-  .cert .subtitle{ 
-    font-family:'Arial Narrow','Libre Franklin',sans-serif; 
-    font-weight:100; font-size:14pt; color:#FF0000; text-transform:uppercase; 
-    letter-spacing:1px; margin:4px 0 0 0; line-height:1.3; 
-  }
-  
-  .cert .spacer-bagu12{ font-family:'Tangerine',cursive; font-size:24pt; line-height:1; }
-  .cert .line-cal{ font-family:'Calibri','Libre Franklin',sans-serif; font-style:italic; font-weight:400; font-size:14pt; color:#000000; line-height:1.5; }
-  .cert .line-an{ font-family:'Arial Narrow','Libre Franklin',sans-serif; font-style:italic; font-weight:400; font-size:14pt; color:#000000; line-height:1.2; }
-  .cert .name{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:18pt; text-transform:uppercase; margin:0; line-height:1.3; white-space:pre-line; word-break:break-word; }
-  .cert .spacer-lf18{ font-family:'Libre Franklin',sans-serif; font-size:2pt; line-height:1; }
-  .cert .role{ font-family:'Libre Franklin',sans-serif; font-weight:800; font-size:18pt; text-transform:uppercase; margin-top:14px; }
-  .cert .program{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:14pt; text-transform:uppercase; line-height:1.4; margin-top:2px; padding:0 6px; }
-  .cert .datevenue{ margin-top:22px; }
-  .cert .datevenue .val{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:14pt; text-transform:uppercase; margin-top:2px; white-space:pre-line; line-height:1.2; }
-  .cert .spacer{ flex:1; }
-  .cert .sign{ position: absolute; bottom: 90px; right: 30px; width: 400px; text-align: center; font-family: 'Calibri', sans-serif; font-size: 14pt; line-height: 1.5; color: #000000; }
-  .cert .sign .sig-space { height: 45px; }
-  .cert .sign .sig-name { font-weight: 700; text-transform: uppercase; }
-  .cert .sign .sig-bottom-space { height: 18px; }
-  .cert .blank-cal14{ font-family:'Calibri','Libre Franklin',sans-serif; font-size:14pt; line-height:1.15; }
-
+  /* ===== SIJIL: disusun ikut templat Word asal (A4, margin 72pt = 96px) =====
+     Setiap div = satu perenggan Word. Line-height = jarak "single" Word untuk font itu. */
+  .cert{ width:794px; height:1123px; background:#ffffff; color:#000000; position:relative; overflow:hidden; padding:96px 96px 0; text-align:center; font-family:'Calibri','Carlito',sans-serif; }
+  .cert > div{ margin:0; }
+  .cert .eb55{ font-family:'EB Garamond',serif; font-size:55pt; line-height:96px; height:96px; }
+  .cert .eb38{ font-family:'EB Garamond',serif; font-size:38pt; line-height:66px; height:66px; }
+  .cert .eb28{ font-family:'EB Garamond',serif; font-size:28pt; line-height:49px; height:49px; }
+  .cert .eb24{ font-family:'EB Garamond',serif; font-size:24pt; line-height:42px; height:42px; }
+  .cert .eb14{ font-family:'EB Garamond',serif; font-size:14pt; line-height:24px; height:24px; }
+  .cert .bag12{ font-size:12pt; line-height:20px; height:20px; }
+  .cert .title{ font-family:'Edwardian Script ITC','Tangerine',cursive; font-weight:700; font-size:72pt; color:#FF0000; line-height:95px; height:95px; white-space:nowrap; }
+  .cert .cal11i{ font-family:'Calibri','Carlito',sans-serif; font-style:italic; font-size:11pt; line-height:18px; min-height:18px; }
+  .cert .cal14{ font-family:'Calibri','Carlito',sans-serif; font-size:14pt; line-height:23px; min-height:23px; }
+  .cert .cal14i{ font-family:'Calibri','Carlito',sans-serif; font-style:italic; font-size:14pt; line-height:23px; min-height:23px; }
+  .cert .cal18i{ font-family:'Calibri','Carlito',sans-serif; font-style:italic; font-size:18pt; line-height:29px; min-height:29px; }
+  .cert .lf8{ font-family:'Libre Franklin',sans-serif; font-size:8pt; line-height:13px; height:13px; }
+  .cert .lf10{ font-family:'Libre Franklin',sans-serif; font-size:10pt; line-height:16px; height:16px; }
+  .cert .lf12b{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:12pt; line-height:19px; min-height:19px; }
+  .cert .lf14b{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:14pt; line-height:23px; min-height:23px; }
+  .cert .lf14x{ font-family:'Libre Franklin',sans-serif; font-weight:800; font-size:14pt; line-height:23px; min-height:23px; }
+  .cert .lf16{ font-family:'Libre Franklin',sans-serif; font-size:16pt; line-height:26px; min-height:26px; }
+  .cert .lf18b{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:18pt; line-height:29px; min-height:29px; }
+  .cert .lf18x{ font-family:'Libre Franklin',sans-serif; font-weight:800; font-size:18pt; line-height:29px; min-height:29px; }
+  .cert .lf20b{ font-family:'Libre Franklin',sans-serif; font-weight:700; font-size:20pt; line-height:32px; min-height:32px; }
+  .cert .an14b{ font-family:'Arial Narrow','Archivo Narrow',sans-serif; font-weight:700; font-size:14pt; line-height:21px; min-height:21px; }
+  .cert .up{ text-transform:uppercase; }
+  .cert .pl{ white-space:pre-line; word-break:break-word; }
+  .cert .sa12{ margin-bottom:16px !important; }
+  .cert .ls115{ line-height:1.15 !important; }
+  /* Tandatangan: blok berpusat, kedudukan mendatar ikut templat Word */
+  .cert .sign{ width:400px; text-align:center; font-family:'Calibri','Carlito',sans-serif; font-size:14pt; line-height:23px; color:#000000; }
+  .cert .sign .sig-name{ font-weight:700; text-transform:uppercase; line-height:26px; }
   .toast{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--ink); color:var(--paper); padding:10px 18px; border-radius:10px; font-size:13.5px; box-shadow:0 8px 24px rgba(0,0,0,.25); opacity:0; pointer-events:none; transition:opacity .2s ease, bottom .2s ease; z-index:50; }
   .toast.show{ opacity:1; bottom:32px; }
   #printArea{ display:none; }
@@ -134,7 +131,7 @@
       <label class="field"><span class="lbl">Tempat <span style="font-weight:400;">(baris baharu untuk daerah)</span></span><textarea id="f_tempat" rows="2">Dewan SK Seri Intan,
 Kluang</textarea></label>
     </div>
-    <label class="field" style="margin-bottom:14px;"><span class="lbl">Tajuk / nama program</span><textarea id="f_program">Penataran Jurulatih Utama 2026</textarea></label>
+    <label class="field" style="margin-bottom:14px;"><span class="lbl">Tajuk / nama program <span style="font-weight:400;">(guna *teks* untuk italik, cth: Bengkel *Smart Write*)</span></span><textarea id="f_program">Penataran Jurulatih Utama 2026</textarea></label>
     <div class="grid2" style="margin-bottom:14px;">
       <label class="field"><span class="lbl">Tarikh</span><input type="text" id="f_tarikh" value="23 – 24 September 2026"></label>
       <label class="field"><span class="lbl">&nbsp;</span><span style="font-size:12.5px;color:var(--ink-soft);padding-top:8px;">Boleh taip julat tarikh terus</span></label>
@@ -191,36 +188,35 @@ Kluang</textarea></label>
         <div class="stage-frame" id="stageFrame">
           <div class="cert-scale-wrap" id="certScaleWrap">
             <div class="cert" id="certLive">
-              <div class="spacer-55">&nbsp;</div>
-              <div class="spacer-38">&nbsp;</div>
+              <div class="eb55">&nbsp;</div>
+              <div class="eb38">&nbsp;</div>
               <div class="title">Sijil Penghargaan</div>
-              
-              <div class="spacer-bagu12">&nbsp;</div>
-              <div class="line-cal"><span id="c_org">Pejabat Pendidikan Daerah Kluang</span> dengan penuh takzim merakamkan</div>
-              <div class="line-cal">setinggi-tinggi penghargaan dan tahniah kepada</div>
-              <div class="blank-cal14">&nbsp;</div>
-              <div class="name" id="c_name">NOOR SYAMSILA BINTI YAHYA</div>
-              <div class="spacer-lf18">&nbsp;</div>
-              <div class="line-cal">atas sumbangan khidmat bakti yang cemerlang sebagai</div>
-              <div class="role" id="c_role">JURULATIH UTAMA</div>
-              <div class="program" id="c_program">PENATARAN JURULATIH UTAMA 2026</div>
-              <div class="datevenue">
-                <div class="line-an">pada</div>
-                <div class="val val-tarikh" id="c_tarikh">23 – 24 SEPTEMBER 2026</div>
-                <div class="line-an" style="margin-top:20px;"></div>
-                <div class="line-an" style="margin-top:2px;">bertempat di</div>
-                <div class="val val-tempat" id="c_tempat">DEWAN SK SERI INTAN, KLUANG</div>
+              <div class="bag12">&nbsp;</div>
+              <div class="cal14i"><span id="c_org">Pejabat Pendidikan Daerah Kluang</span> dengan penuh takzim merakamkan</div>
+              <div class="cal14i sa12">setinggi-tinggi penghargaan dan tahniah kepada</div>
+              <div class="lf18b up pl" id="c_name">NOOR SYAMSILA BINTI YAHYA</div>
+              <div class="lf18b">&nbsp;</div>
+              <div class="cal14i sa12">atas sumbangan khidmat bakti yang cemerlang sebagai</div>
+              <div class="lf18x up pl" id="c_role">JURULATIH UTAMA</div>
+              <div class="an14b up pl" id="c_program">PENATARAN JURULATIH UTAMA 2026</div>
+              <div class="an14b">&nbsp;</div>
+              <div class="cal14i">pada</div>
+              <div class="lf14b up pl" id="c_tarikh">23 – 24 SEPTEMBER 2026</div>
+              <div class="lf14b">&nbsp;</div>
+              <div class="cal14i">bertempat di</div>
+              <div class="lf14b up pl" id="c_tempat">DEWAN SK SERI INTAN, KLUANG</div>
+              <div class="lf14b">&nbsp;</div>
+              <div class="lf14b">&nbsp;</div>
+              <div class="lf14b">&nbsp;</div>
+              <div class="cal14">&nbsp;</div>
+              <div class="cal14">&nbsp;</div>
+              <div class="cal14">&nbsp;</div>
+              <div class="cal14">&nbsp;</div>
+              <div class="cal14">&nbsp;</div>
+              <div class="sign" style="margin-left:255px; line-height:26px;"><div class="sig-name" id="c_signName">(HAJI AYUB BIN IBRAHIM)</div>
+              <div id="c_signRole">Pegawai Pendidikan Daerah</div>
+              <div id="c_signOrg">Pejabat Pendidikan Daerah Kluang</div>
               </div>
-              
-              <!-- BAHAGIAN TANDATANGAN DIKEMASKINI (TIADA LAGI style="display:none;") -->
-              <div class="sign">
-                <div class="sig-space"></div>
-                <div class="sig-name" id="c_signName">(HAJI AYUB BIN IBRAHIM)</div>
-                <div id="c_signRole">Pegawai Pendidikan Daerah</div>
-                <div id="c_signOrg">Pejabat Pendidikan Daerah Kluang</div>
-                <div class="sig-bottom-space"></div>
-              </div>
-              
             </div>
           </div>
         </div>
@@ -245,6 +241,8 @@ Kluang</textarea></label>
 
   function toast(msg){ var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._h); toast._h = setTimeout(function(){ t.classList.remove('show'); }, 2400); }
   function fixedFields(){ return { org: els.f_org.value.trim() || "—", tempat: els.f_tempat.value.trim() || "—", program: els.f_program.value.trim() || "—", tarikh: els.f_tarikh.value.trim() || "—", signName: els.f_signName.value.trim() || "—", signRole: els.f_signRole.value.trim(), signOrg: els.f_signOrg.value.trim() || "—" }; }
+  // Teks kaya: *teks* = italik, baris baharu dikekalkan
+  function richText(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }).replace(/\*([^*\n]+)\*/g, '<i>$1</i>'); }
   function formatSignName(n){ n = n.trim(); if(!n) return "—"; if(n[0] === "(") return n; return "(" + n + ")"; }
 
   function fillCert(container, recipient){
@@ -253,7 +251,7 @@ Kluang</textarea></label>
     q('#c_org') && (q('#c_org').textContent = ff.org);
     var nameEl = q('#c_name'); if(nameEl) nameEl.textContent = (recipient ? recipient.nama : "") || "—";
     var roleEl = q('#c_role'); if(roleEl) roleEl.textContent = (recipient ? recipient.jawatan : "") || "—";
-    var progEl = q('#c_program'); if(progEl) progEl.textContent = ff.program;
+    var progEl = q('#c_program'); if(progEl) progEl.innerHTML = richText(ff.program);
     var tarikhEl = q('#c_tarikh'); if(tarikhEl) tarikhEl.textContent = ff.tarikh;
     var tempatEl = q('#c_tempat'); if(tempatEl) tempatEl.textContent = ff.tempat;
     var signNameEl = q('#c_signName'); if(signNameEl) signNameEl.textContent = formatSignName(ff.signName);
