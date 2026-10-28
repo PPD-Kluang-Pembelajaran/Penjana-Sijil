@@ -100,6 +100,9 @@
   /* Tandatangan: blok berpusat, kedudukan mendatar ikut templat Word */
   .cert .sign{ width:400px; text-align:center; font-family:'Calibri','Carlito',sans-serif; font-size:14pt; line-height:23px; color:#000000; }
   .cert .sign .sig-name{ font-weight:700; text-transform:uppercase; line-height:26px; }
+  .cert .sign{ position:relative; }
+  /* Imej tandatangan: bertindih sedikit di atas nama, tidak menolak susun atur */
+  .cert .sign .sig-img{ position:absolute; left:50%; bottom:calc(100% - 22px); transform:translateX(-50%); height:104px; width:auto; pointer-events:none; }
   .toast{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--ink); color:var(--paper); padding:10px 18px; border-radius:10px; font-size:13.5px; box-shadow:0 8px 24px rgba(0,0,0,.25); opacity:0; pointer-events:none; transition:opacity .2s ease, bottom .2s ease; z-index:50; }
   .toast.show{ opacity:1; bottom:32px; }
   #printArea{ display:none; }
@@ -154,6 +157,10 @@
       <label class="field"><span class="lbl">Jawatan</span><input type="text" id="f_signRole" value="Pegawai Pendidikan Daerah"></label>
       <label class="field"><span class="lbl">Organisasi penandatangan</span><input type="text" id="f_signOrg" value="Pejabat Pendidikan Daerah Kluang"></label>
     </div>
+    <label id="optSignWrap" style="display:flex; align-items:center; gap:10px; margin-top:14px; font-size:13.5px; cursor:pointer;">
+      <input type="checkbox" id="opt_sign" style="width:18px; height:18px; accent-color:var(--accent);">
+      <span><strong>Sertakan tandatangan Tuan Haji Ayub</strong> <span id="optSignHint" style="color:var(--ink-soft);">(hanya untuk penandatangan Haji Ayub bin Ibrahim)</span></span>
+    </label>
   </section>
 
   <section class="card">
@@ -224,7 +231,7 @@
               <div class="cal14">&nbsp;</div>
               <div class="cal14">&nbsp;</div>
               <div class="cal14">&nbsp;</div>
-              <div class="sign" style="margin-left:255px;"><div class="sig-name" id="c_signName">(HAJI AYUB BIN IBRAHIM)</div>
+              <div class="sign" style="margin-left:255px;"><img class="sig-img" id="c_signImg" src="tandatangan_ayub.png" alt="" style="display:none"><div class="sig-name" id="c_signName">(HAJI AYUB BIN IBRAHIM)</div>
               <div id="c_signRole">Pegawai Pendidikan Daerah</div>
               <div id="c_signOrg">Pejabat Pendidikan Daerah Kluang</div>
               </div>
@@ -268,6 +275,7 @@
     var signNameEl = q('#c_signName'); if(signNameEl) signNameEl.textContent = formatSignName(ff.signName);
     var signRoleEl = q('#c_signRole'); if(signRoleEl) { signRoleEl.textContent = ff.signRole; signRoleEl.style.display = ff.signRole ? 'block' : 'none'; }
     var signOrgEl = q('#c_signOrg'); if(signOrgEl) signOrgEl.textContent = ff.signOrg;
+    var sImg = q('#c_signImg'); if(sImg) sImg.style.display = signImgOn() ? 'block' : 'none';
   }
 
   function refreshLivePreview(){
@@ -276,6 +284,26 @@
     if(picker.value) { for(var i=0;i<recipients.length;i++){ if(String(recipients[i].id) === picker.value) { r = recipients[i]; break; } } }
     fillCert(document.getElementById('certLive'), r);
   }
+
+  // --- Tandatangan digital Tuan Haji Ayub (hanya jika nama penandatangan ialah Ayub) ---
+  function isAyub(){ return /ayub/i.test(els.f_signName.value || ''); }
+  function signImgOn(){ var c = document.getElementById('opt_sign'); return !!(c && c.checked && isAyub()); }
+  function syncSignOption(){
+    var c = document.getElementById('opt_sign'), wrap = document.getElementById('optSignWrap');
+    if(!c) return;
+    var ok = isAyub();
+    c.disabled = !ok;
+    wrap.style.opacity = ok ? '1' : '.5';
+    wrap.style.cursor = ok ? 'pointer' : 'not-allowed';
+    try{ localStorage.setItem('penjanaSijil_optSign_' + location.pathname, c.checked ? '1' : '0'); }catch(e){}
+  }
+  (function(){
+    var c = document.getElementById('opt_sign');
+    try{ c.checked = localStorage.getItem('penjanaSijil_optSign_' + location.pathname) === '1'; }catch(e){}
+    c.addEventListener('change', function(){ syncSignOption(); refreshLivePreview(); });
+    els.f_signName.addEventListener('input', syncSignOption);
+    syncSignOption();
+  })();
   [els.f_org, els.f_program, els.f_tarikh, els.f_tempat, els.f_signName, els.f_signRole, els.f_signOrg].forEach(function(el){ el.addEventListener('input', refreshLivePreview); });
 
   function rescaleStage(){
